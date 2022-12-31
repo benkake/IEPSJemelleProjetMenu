@@ -6,6 +6,7 @@ import be.epsmarche.poo.ben.projetMenu.Patterns.*;
 public class Riz extends PlatDecorator {
 
 	protected Double prixRiz = 7.5;
+	protected String typeRiz = "riz canonnais";
 
 	public Riz(Iplat platDecore) {
 		super(platDecore);
@@ -14,7 +15,7 @@ public class Riz extends PlatDecorator {
 
 	@Override
 	public String getPeparation() {
-		return platDecore.getPeparation() + " + riz cantonais";
+		return platDecore.getPeparation() +" accompagné de "+ getType();
 	}
 
 	@Override
@@ -33,14 +34,13 @@ public class Riz extends PlatDecorator {
 
 	@Override
 	public void setType(String type) {
-		// TODO Auto-generated method stub
+		this.typeRiz = type;
 
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeRiz;
 	}
 
 	@Override
