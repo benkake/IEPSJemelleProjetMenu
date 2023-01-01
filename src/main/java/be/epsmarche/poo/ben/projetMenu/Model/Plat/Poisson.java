@@ -1,19 +1,47 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Plat;
-
+/**
+ * Classe definissant un plat à base de Poisson
+ * @author ben
+ */
 public class Poisson implements Iplat {
 
-	protected Double prix = 11.5;
-	protected String type = "Steak de thon rouge";
-
+	/**
+	 * Prix du plat
+	 */
+	//protected Double prix = 11.5;
+	protected Double prix;
+	/**
+	 * Type de plat
+	 */
+	//protected String type = "Steak de thon rouge";
+	protected String type;
+	
+	/**
+	 * Constructeurs de nouvels objets plat à base de poisson
+	 */
 	public Poisson() {
 		super();
 	}
-
+	/**
+	 * @param type
+	 */
 	public Poisson(String type) {
 		super();
 		this.type = getType();
 	}
-
+	/**
+	 * @param type
+	 * @param prix
+	 */
+	public Poisson( String type, Double prix) {
+		super();
+		this.type = type;
+		this.prix = prix;
+	}
+	
+	/**
+	 * Getters et Setters
+	 */
 	@Override
 	public Double getPrix() {
 		return this.prix;
@@ -33,15 +61,20 @@ public class Poisson implements Iplat {
 	public void setType(String type) {
 		this.type = type;
 	}
-
+	
+	/**
+	 * @return le type de plat à base de poisson + la description de sa préparation
+	 */
 	@Override
 	public String getPeparation() {
 		return getType() + " mariné à la farine de blé";
 	}
-
+	/**
+	 * @return au format lisible le prix et le type de plat à base de poisson
+	 */
 	@Override
 	public String toString() {
-		return "Poisson [prix=" + prix + ", type=" + type + "]";
+		return getPeparation();
 	}
 
 }
