@@ -2,28 +2,42 @@ package be.epsmarche.poo.ben.projetMenu.Patterns;
 
 import be.epsmarche.poo.ben.projetMenu.Model.Plat.*;
 
+/**
+ * Classe permettant de sélectionner les catégories de plat
+ * @author ben
+ */
 public class PlatFactory {
 
+	/**
+	 * Constructeur par defaut
+	 */
 	public PlatFactory() {
 
 	}
 
-	/*
-	 * Types de plat: Poisson, viande, Valaille
+	/**
+	 * @param categorieDePlat
+	 * @param typePlat
+	 * @param prixPlat
+	 * @return un plat 
+	 * en fonction de la catégorie de plat choisie
+	 * (soient à base de viande, de volaille ou de poisson)
 	 */
 
-	public Iplat getPlat(String typeDePlat) {
+	public Iplat getPlat(String categorieDePlat,String typePlat, Double prixPlat) {
 
-		if (typeDePlat == null)
+		if (categorieDePlat == null)
 			return null;
-		if (typeDePlat.equalsIgnoreCase("viande"))
-			return new Viande("viande");
-		if (typeDePlat.equalsIgnoreCase("poisson"))
-			return new Poisson("poisson");
-		if (typeDePlat.equalsIgnoreCase("volaille"))
-			return new Volaille("volaille");
+		if (categorieDePlat.equalsIgnoreCase("viande"))
+			return new Viande(typePlat, prixPlat);
+		if (categorieDePlat.equalsIgnoreCase("poisson"))
+			return new Poisson(typePlat, prixPlat);
+		if (categorieDePlat.equalsIgnoreCase("volaille"))
+			return new Volaille(typePlat, prixPlat);
 
 		return null;
 	}
-
+ 
+	
+	
 }
