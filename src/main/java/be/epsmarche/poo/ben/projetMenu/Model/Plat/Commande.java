@@ -58,6 +58,15 @@ public class Commande {
 	}
 	
 	/**
+	 * 
+	 */
+	
+//	public ArrayList<Iplat> displayMenu(ArrayList<Iplat> menus){
+//		for(int i = 0; i < menus.size(); ++i) 
+//			return (ArrayList<Iplat>) (menus.get(i));   
+//	}
+	
+	/**
 	 * @return le prix total de toute la commande
 	 */
 	public Double getPrixTotal() {
@@ -67,6 +76,19 @@ public class Commande {
 		}
 		return prixTot;
 	}
+
+	@Override
+	public String toString() {
+		return "========================================================\n"
+				+"Commande de la "+ numTab +"\n"
+				+"--------------------------------------------------------\n"
+				+getListeMenu() +"\n"
+				+"--------------------------------------------------------\n"
+				+"Prix total: €"+getPrixTotal()+"\n" 
+				+"--------------------------------------------------------\n";
+	}
+	
+	
 	
 	
 }
