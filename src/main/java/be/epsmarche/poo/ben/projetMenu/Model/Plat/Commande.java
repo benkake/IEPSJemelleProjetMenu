@@ -61,10 +61,16 @@ public class Commande {
 	 * 
 	 */
 	
-//	public ArrayList<Iplat> displayMenu(ArrayList<Iplat> menus){
-//		for(int i = 0; i < menus.size(); ++i) 
-//			return (ArrayList<Iplat>) (menus.get(i));   
-//	}
+	public String displayCommand(){
+		Iplat tmp;
+		String text ="***********Commande de la table "+getNumTab()+" ********************\n\n";
+		for(int i = 0; i < getListeMenu().size(); ++i) { 
+			 tmp = (Iplat) (getListeMenu().get(i)); 
+			  text += tmp.toString()+"-----------------------\n";
+		}
+		return text +"Prix total: €"+getPrixTotal();
+		
+	}
 	
 	/**
 	 * @return le prix total de toute la commande
