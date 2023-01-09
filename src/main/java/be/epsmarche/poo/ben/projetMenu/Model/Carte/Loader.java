@@ -61,6 +61,7 @@ public class Loader {
 		//qui se situe au rang zero du tableau menu
 		Element elementPlats = racine.getChildren("plats").get(0);
 		// recuperation des noeuds enfants du noeud plats
+		
 		List listeTypesPlats = elementPlats.getChildren();
 		//Création d'un iterateur pour parcourir la liste des types de plat
 		Iterator it1 = listeTypesPlats.iterator();
@@ -71,6 +72,7 @@ public class Loader {
 			Element elementCategoriePlat = (Element) it1.next(); 
 			String valeurAttrCategorie = elementCategoriePlat.getAttributeValue("id");
 			// récupération des noeuds enfants de catégorie
+			//TODO voir si l'on peut donner Iplat en paramètre de la liste ci-dessous ?? 
 			List listeCategoriePlat = elementCategoriePlat.getChildren();
 			Iterator it2 = listeCategoriePlat.iterator();
 			// parcours du tableau listeCategorielat pour
