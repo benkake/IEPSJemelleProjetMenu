@@ -1,15 +1,15 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Carte;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.xml.sax.SAXException;
 
 /**
  * Classe permettant de lire fichier des données menuForTest.xml
@@ -20,35 +20,51 @@ public class Loader {
 	/**
 	 * Création d'un objet Document
 	 */
-	Document document;
+	public Document document;
 	/**
 	 * Création élément racine
 	 */
-	Element racine;
+	public Element racine;
+	
+	/**
+	 * tableau de stockage des 3 groupe d'elements composant les menus
+	 */
+	public static List<Element> composantsDesMenus = null;
 	/**
 	 * Contructeur 
 	 * + initialisation connexion au fichier xml 
 	 * + création document et racine
 	 */
-	public Loader(String nomFichierXML) {
-		// création d'un objet SAXBuilder 
-		//pour analyser le fichier XML avec un parseur SAX 
-		//et créer une arborescence JDOM
-		SAXBuilder saxB = new SAXBuilder();
+
+	public Loader(String nomFichier)throws ParserConfigurationException,SAXException,IOException {
+		//this.nom = nomFichier;
+		
 		try {
-			//Création d'un objet fichier dont le nom est donné en paramètre
-			File fichierXML = new File(nomFichierXML);
 			
-			//construction d'un document JDOM via la methode build() de SAXBuilder
-			//avec en argument le fichier xml
-			document = saxB.build(fichierXML);
+			//Création d'un objet fichier dont le nom est donné en paramètre
+			File inputFile = new File(nomFichier);
+			// création d'un objet SAXBuilder 
+			SAXBuilder saxB = new SAXBuilder();
+			
+			//construction d'un document JDOM 
+			document = saxB.build(inputFile);
+			// je teste si l'élement racine est retrouvé
+			System.out.println("element Racine..: "+document.getRootElement().getName());
+			// construction de l'élément racine à partir du document construit c-dessus
+			racine = document.getRootElement();
+			
+			/**
+			 * Chargement du tableau des 3 goupes 
+			 * d'éléments composant les menus(plat, accompagnement, dessert) 
+			 */
+			composantsDesMenus = racine.getChildren();
+			System.out.println("-----------------------------------");
+			
 			
 		} catch (JDOMException|IOException e) {
-			System.err.println("Une erreur s'est produite: "+e);
+			System.err.println("Une erreur s'est produite!!!!: "+e);
 		}
-		
-		// construction de l'élément racine à partir du document construit c-dessus
-		racine = document.getRootElement();
+
 	}
 	
 	/**
@@ -59,10 +75,15 @@ public class Loader {
 		ArrayList<Choix> listeDePlats = new ArrayList<>();
 		// Liste du noeud plats 
 		//qui se situe au rang zero du tableau menu
-		Element elementPlats = racine.getChildren("plats").get(0);
-		// recuperation des noeuds enfants du noeud plats
 		
-		List listeTypesPlats = elementPlats.getChildren();
+		
+		//Element elementPlats = racine.getChildren("plats").get(0);
+		  Element elementPlats = document.getRootElement();
+		// recuperation des noeuds enfants du noeud plats
+		//  System.out.println(elementPlats.getName());
+		  
+		  
+		List <Element>listeTypesPlats = elementPlats.getChildren();
 		//Création d'un iterateur pour parcourir la liste des types de plat
 		Iterator it1 = listeTypesPlats.iterator();
 		
@@ -167,5 +188,11 @@ public class Loader {
 		carte.setListeDesAccompagnements(listeDeDesserts);
 	}
 
+	@Override
+	public String toString() {
+		return "Loader [document=" + document + ", racine=" + racine + "]";
+	}
 
+
+	
 }
