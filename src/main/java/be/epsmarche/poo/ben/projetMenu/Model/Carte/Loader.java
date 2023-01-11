@@ -37,29 +37,25 @@ public class Loader {
 	 */
 
 	public Loader(String nomFichier)throws ParserConfigurationException,SAXException,IOException {
-		//this.nom = nomFichier;
 		
 		try {
 			
-			//Création d'un objet fichier dont le nom est donné en paramètre
+			//Création d'un objet fichier 
 			File inputFile = new File(nomFichier);
 			// création d'un objet SAXBuilder 
 			SAXBuilder saxB = new SAXBuilder();
 			
-			//construction d'un document JDOM 
+			//construction d'un document JDOM avec un fichier en paramètre
 			document = saxB.build(inputFile);
-			// je teste si l'élement racine est retrouvé
-			System.out.println("element Racine..: "+document.getRootElement().getName());
-			// construction de l'élément racine à partir du document construit c-dessus
+			
+			// construction de l'élément racine à partir du document construit 
 			racine = document.getRootElement();
 			
 			/**
-			 * Chargement du tableau des 3 goupes 
-			 * d'éléments composant les menus(plat, accompagnement, dessert) 
+			 * Chargement du tableau racine contenant les 3 goupes 
+			 * d'éléments(plat, accompagnement, dessert) qui composent les menus 
 			 */
 			composantsDesMenus = racine.getChildren();
-			System.out.println("-----------------------------------");
-			
 			
 		} catch (JDOMException|IOException e) {
 			System.err.println("Une erreur s'est produite!!!!: "+e);
@@ -74,18 +70,11 @@ public class Loader {
 		// Creation d'une liste de plats
 		ArrayList<Choix> listeDePlats = new ArrayList<>();
 		// Liste du noeud plats 
-		//qui se situe au rang zero du tableau menu
-		
-		
-		//Element elementPlats = racine.getChildren("plats").get(0);
-		  Element elementPlats = document.getRootElement();
-		// recuperation des noeuds enfants du noeud plats
-		//  System.out.println(elementPlats.getName());
-		  
-		  
-		List <Element>listeTypesPlats = elementPlats.getChildren();
-		//Création d'un iterateur pour parcourir la liste des types de plat
-		Iterator it1 = listeTypesPlats.iterator();
+		Element elementPlats = racine.getChildren("plats").get(0);
+		// recuperation des noeuds enfants du noeud "plats"
+		List<Element> listeTypesPlats = elementPlats.getChildren();
+		//Création d'un iterateur pour parcourir les enfants du noeud plats
+		Iterator<Element> it1 = listeTypesPlats.iterator();
 		
 		// parcours du tableau listeTypesPlats pour
 		// récupérer les éléments catégories de plat
@@ -93,9 +82,8 @@ public class Loader {
 			Element elementCategoriePlat = (Element) it1.next(); 
 			String valeurAttrCategorie = elementCategoriePlat.getAttributeValue("id");
 			// récupération des noeuds enfants de catégorie
-			//TODO voir si l'on peut donner Iplat en paramètre de la liste ci-dessous ?? 
-			List listeCategoriePlat = elementCategoriePlat.getChildren();
-			Iterator it2 = listeCategoriePlat.iterator();
+			List<Element> listeCategoriePlat = elementCategoriePlat.getChildren();
+			Iterator<Element> it2 = listeCategoriePlat.iterator();
 			// parcours du tableau listeCategorielat pour
 			// récupérer les elements plat
 			while(it2.hasNext()) {
@@ -117,23 +105,23 @@ public class Loader {
 	 */
 	public void creationAccompagnements() {
 		// Creation d'une liste d'accompagnements
-		ArrayList<Choix> listeAccompagnements = new ArrayList<>();
-		// Liste du noeud accompagnement 
-		//qui se situe au rang zero du tableau menu
-		Element elementAccompagnement = racine.getChildren("accompagnements").get(0);
-		// recuperation des noeuds enfants du noeud accompagnement
-		List listeTypesAccompagnement = elementAccompagnement.getChildren();
-		//Création d'un iterateur pour parcourir la liste des types d'accompagnement
-		Iterator it1 = listeTypesAccompagnement.iterator();
+		ArrayList<Choix> listeDaccompagnements = new ArrayList<>();
+		// Liste du noeud accompagnements 
+		Element elementAccompagnements = racine.getChildren("accompagnements").get(0);
+		// recuperation des noeuds enfants du noeud "accompagnements"
+		List<Element> listeTypesAccompagnement = elementAccompagnements.getChildren();
+		//Création d'un iterateur pour parcourir les enfants du noeud accompagnements
+		Iterator<Element> it1 = listeTypesAccompagnement.iterator();
 		
-		// parcours du tableau listeTypesDacompanemet pour
+		// parcours du tableau listeTypesAccompagnement pour
 		// récupérer les éléments catégories d'accompagnement
 		while(it1.hasNext()){
 			Element elementCategorieAccomp = (Element) it1.next(); 
 			String valeurAttrCategorie = elementCategorieAccomp.getAttributeValue("id");
 			// récupération des noeuds enfants de catégorie
-			List listeCategorieAccomp = elementCategorieAccomp.getChildren();
-			Iterator it2 = listeCategorieAccomp.iterator();
+			
+			List<Element> listeCategorieAccomp = elementCategorieAccomp.getChildren();
+			Iterator<Element> it2 = listeCategorieAccomp.iterator();
 			// parcours du tableau listeCategorieAccomp pour
 			// récupérer les elements accompagnement
 			while(it2.hasNext()) {
@@ -142,12 +130,12 @@ public class Loader {
 				String id = elementAccomp.getAttributeValue("id");
 				String description = elementAccomp.getChildText("type");
 				Double prix = Double.parseDouble(elementAccomp.getChildText("prix"));
-				Choix choixDacompagnement = new Choix(id, categorieAccomp, valeurAttrCategorie, prix, description);
-				listeAccompagnements.add(choixDacompagnement);
+				Choix choixDaccompagnement = new Choix(id, categorieAccomp, valeurAttrCategorie, prix, description);
+				listeDaccompagnements.add(choixDaccompagnement);
 			}
 		}
 		Carte carte = Carte.getInstance();
-		carte.setListeDesAccompagnements(listeAccompagnements);
+		carte.setListeDesAccompagnements(listeDaccompagnements);
 	}
 	
 	/**
@@ -157,35 +145,34 @@ public class Loader {
 		// Creation d'une liste de desserts
 		ArrayList<Choix> listeDeDesserts = new ArrayList<>();
 		// Liste du noeud Dessert 
-		//qui se situe au rang zero du tableau menu
-		Element elementDessert = racine.getChildren("desserts").get(0);
-		// recuperation des noeuds enfants du noeud dessert
-		List listeTypesDessert = elementDessert.getChildren();
-		//Création d'un iterateur pour parcourir la liste des types de dessert
-		Iterator it1 = listeTypesDessert.iterator();
+		Element elementDesserts = racine.getChildren("desserts").get(0);
+		// recuperation des noeuds enfants du noeud "dessert"
+		List<Element> listeTypesDessert = elementDesserts.getChildren();
+		//Création d'un iterateur pour parcourir les enfants du noeud desserts
+		Iterator<Element> it1 = listeTypesDessert.iterator();
 		
 		// parcours du tableau listeTypesDessert pour
 		// récupérer les éléments catégories de dessert
 		while(it1.hasNext()){
 			Element elementCategorieDessert = (Element) it1.next(); 
-			String valeurAttrDessert = elementCategorieDessert.getAttributeValue("id");
+			String valeurAttrCategorie = elementCategorieDessert.getAttributeValue("id");
 			// récupération des noeuds enfants de catégorie
-			List listeCategorieDessert = elementCategorieDessert.getChildren();
-			Iterator it2 = listeCategorieDessert.iterator();
+			List<Element> listeCategorieDessert = elementCategorieDessert.getChildren();
+			Iterator<Element> it2 = listeCategorieDessert.iterator();
 			// parcours du tableau listeCategorieDessert pour
-			// récupérer les elements accompagnement
+			// récupérer les elements dessert
 			while(it2.hasNext()) {
 				Element elementDess = (Element) it2.next();
 				String categorieDessert = elementDess .getName();
 				String id = elementDess .getAttributeValue("id");
 				String description = elementDess .getChildText("type");
 				Double prix = Double.parseDouble(elementDess .getChildText("prix"));
-				Choix choixDeDessert = new Choix(id, categorieDessert, valeurAttrDessert, prix, description);
+				Choix choixDeDessert = new Choix(id, categorieDessert, valeurAttrCategorie, prix, description);
 				listeDeDesserts.add(choixDeDessert);
 			}
 		}
 		Carte carte = Carte.getInstance();
-		carte.setListeDesAccompagnements(listeDeDesserts);
+		carte.setListeDesDesserts(listeDeDesserts);
 	}
 
 	@Override
@@ -193,6 +180,4 @@ public class Loader {
 		return "Loader [document=" + document + ", racine=" + racine + "]";
 	}
 
-
-	
 }
