@@ -4,11 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.jdom2.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,7 @@ public class Test03LesCartes {
 	public static void setUpClass() throws ParserConfigurationException, SAXException, IOException {
 		load = new Loader("menuForTest.xml");
 	}
-	
+
 	@Order(1)
 	@Test
 	public void testPlatLoading() {
@@ -57,7 +55,49 @@ public class Test03LesCartes {
 		assertThat(platTest.getId()).isEqualTo("steakPoisson");
 		assertThat(platTest.getDescription()).isEqualTo("Steak de 240g de requin");
 		assertThat(platTest.getPrix()).isEqualTo(30.5);
-		System.out.println("Test contenu d'un plat OK!");
+		System.out.println("Test contenu d'un plat OK!\n");
+	}
+	@Order(2)
+	@Test
+	public void testAccompagnementsLoading() {
+		/**
+		 * Chargement des 4 accompagnements disponibles
+		 */
+		load.creationAccompagnements(); 
+		ArrayList<Choix> listeAccompagnements = Carte.getInstance().getListeDesAccompagnements();
+		assertThat(listeAccompagnements.size()).isEqualTo(4);
+		System.out.println("Test loading liste des accompagnements OK!");
+		/**
+		 * Test du 2e accompagnement du tableau des accompagnements: les pates
+		 */
+		Choix accompTest = (Choix)listeAccompagnements.get(1);
+		assertThat(accompTest.getCategorie()).isEqualTo("accompagnement");
+		assertThat(accompTest.getType()).isEqualTo("pates");
+		assertThat(accompTest.getId()).isEqualTo("macaroni");
+		assertThat(accompTest.getDescription()).isEqualTo("Macaroni de Sicile");
+		assertThat(accompTest.getPrix()).isEqualTo(6.5);
+		System.out.println("Test contenu d'un accompagnement OK!\n");
+	}
+	@Order(3)
+	@Test
+	public void testDessertLoading() {
+		/**
+		 * Chargement des 4 desserts disponibles
+		 */
+		load.creationDessert();; 
+		ArrayList<Choix> listeDesDesserts = Carte.getInstance().getListeDesDesserts();
+		assertThat(listeDesDesserts.size()).isEqualTo(4);
+		System.out.println("Test loading liste des desserts OK!");
+		/**
+		 * Test du 2e dessert du tableau des desserts: patisserie
+		 */
+		Choix dessertTest = (Choix)listeDesDesserts.get(1);
+		assertThat(dessertTest.getCategorie()).isEqualTo("dessert");
+		assertThat(dessertTest.getType()).isEqualTo("patisserie");
+		assertThat(dessertTest.getId()).isEqualTo("crepe");
+		assertThat(dessertTest.getDescription()).isEqualTo("Crêpe à la crème au chocolat");
+		assertThat(dessertTest.getPrix()).isEqualTo(5.0);
+		System.out.println("Test contenu d'un dessert OK!");
 	}
 
 }
