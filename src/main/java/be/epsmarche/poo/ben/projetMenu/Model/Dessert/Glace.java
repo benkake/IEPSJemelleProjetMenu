@@ -21,7 +21,7 @@ public class Glace extends PlatDecorator {
 	protected String typeDstGlace;
 	
 	/**
-	 * Constructeur de dessert
+	 * Constructeur de dessert à base de Glace
 	 * @param menu
 	 * @param prix
 	 * @param type
@@ -33,7 +33,7 @@ public class Glace extends PlatDecorator {
 	}
 	
 	/**
-	 * @return le plat garni avec le type de dessert 
+	 * @return le plat garni avec le type de dessert à base de glace
 	 */
 	@Override
 	public String getPeparation() {
@@ -43,14 +43,13 @@ public class Glace extends PlatDecorator {
 	/**
 	 * Getters et setters
 	 */
-	
 	@Override
 	public void setPrix(Double prix) {
 		this.prixDstGlace = prix;
 	}
 
 	/**
-	 * @return le prix le prix du plat + le prix de l'accompagnement + le prix du dessert
+	 * @return le prix le prix du plat + le prix de l'accompagnement + le prix du dessert à base de glace
 	 */
 	@Override
 	public Double getPrix() {
@@ -69,7 +68,7 @@ public class Glace extends PlatDecorator {
 	
 	/**
 	 * Affiche (lisiblement)le menu comprenant:
-	 * le plat + accompagnement + dessert
+	 * le plat + accompagnement + dessert à base de glace
 	 */
 	@Override
 	public String toString() {

@@ -1,19 +1,21 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Plat;
 
 /**
- * Cette classe représente un plat à base de viande
+ * Classe definissant un plat à base de viande
+ * @author ben
  */
 public class Viande implements Iplat {
-	
-	//protected Double prix = 10.5;
+	/**
+	 *@param Prix du plat
+	 */
 	protected Double prix;
-	//protected String type = "Steak de 200g de crocodile";
+	/**
+	 *@param Type de plat
+	 */
 	protected String type;
 	
-	//public String preparation = getPeparation();
-
 	/**
-	 * Constructeurs de nouvels objets Viande
+	 * Constructeurs de nouvels objets plat à base de Viande
 	 */
 	
 	public Viande() {
@@ -62,16 +64,19 @@ public class Viande implements Iplat {
 	}
 
 	/**
-	 * @return au format lisible le prix et le type de viande
+	 * @return le type de plat à base de viande + la description de sa préparation
 	 */
-	@Override
-	public String toString() {
-		return "Viande [prix=" + getPrix() + ", type=" + getType() + "]";
-	}
-	
 	@Override
 	public String getPeparation() {
 		return getType() + " mariné au piment africain";
+	}
+	
+	/**
+	 * @return au format lisible la méthode getPreparation()
+	 */
+	@Override
+	public String toString() {
+		return getPeparation();
 	}
 
 }

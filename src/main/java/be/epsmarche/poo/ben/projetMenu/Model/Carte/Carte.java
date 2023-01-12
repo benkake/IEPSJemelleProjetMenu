@@ -25,13 +25,49 @@ public class Carte {
     /**
      * constructeur par defaut
      */
-    public Carte() {}
-
+    private Carte() {}
+    
     /**
+     * Getters and setters
+     * @return
+     */
+
+    public void setListeDesPlats(ArrayList<Choix> listeDesPlats) {
+		this.listeDesPlats = listeDesPlats;
+	}
+    
+    public ArrayList<Choix> getListeDesPlats() {
+		return this.listeDesPlats;
+	}
+
+
+	public ArrayList<Choix> getListeDesAccompagnements() {
+		return this.listeDesAccompagnements;
+	}
+
+
+	public void setListeDesAccompagnements(ArrayList<Choix> listeDesAccompagnements) {
+		this.listeDesAccompagnements = listeDesAccompagnements;
+	}
+
+
+	public ArrayList<Choix> getListeDesDesserts() {
+		return listeDesDesserts;
+	}
+
+
+	public void setListeDesDesserts(ArrayList<Choix> listeDesDesserts) {
+		this.listeDesDesserts = listeDesDesserts;
+	}
+
+
+	/**
      * constructeur singleton
      * Nota: Permet d'obtenir un objet unique de type Carte
      * @return une instance de la Classe Carte
      */
+	
+	
     public static Carte getInstance(){
        return  CarteGetter.INSTANCE;
     }
@@ -41,7 +77,7 @@ public class Carte {
      * qui permet d'avoir un composant unique du menu (plat ou accompagnement ou dessert)
      */
     private static class CarteGetter{
-        private static final Carte INSTANCE = new Carte();
+    	private static final Carte INSTANCE = new Carte();    
     }
 
     /**
@@ -60,14 +96,13 @@ public class Carte {
         }
         return platChoisi;
     }
-
     /**
      * @param idAccomp
      * @return un choix d'accompagnement
      */
     public Choix getAccompagnementChoisi(String idAccomp){
         Choix accompagnementChoisi = null;
-        Iterator<Choix> it = listeDesAccompagnements.listIterator();
+        Iterator<Choix> it = listeDesAccompagnements.iterator();
         while(it.hasNext()){
             Choix choix = it.next();
             if(choix.getId().equals(idAccomp)){
@@ -88,5 +123,13 @@ public class Carte {
         }
         return dessertChoisi;
     }
+
+	@Override
+	public String toString() {
+		return "Carte [listeDesPlats=" + listeDesPlats + ", listeDesAccompagnements=" + listeDesAccompagnements
+				+ ", listeDesDesserts=" + listeDesDesserts + "]";
+	}
+    
+    
 
 }

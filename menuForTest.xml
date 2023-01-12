@@ -1,8 +1,8 @@
 <?xml version ="1.0" encoding ="UTF-8"?>
 
-<!-- root menus (contient la liste des plats + accompagnements + desserts)  -->
+<!-- root menus (contient le contenu des choix dont chacun combine: 1 plats +1 accompagnements +1 desserts)  -->
 <menus> 
-		<!-- sub-child "plats" (contient la liste des plats)-->
+		<!-- child "plats" (contient la liste des plats)-->
 		<plats> 
 				<!-- plats à base de viande  -->
 				<categorie id = "viande">
@@ -30,7 +30,7 @@
 				
 		</plats>
 		
-		<!-- sub-child "accompagnements" (contient la liste des accompagnements)-->
+		<!-- child "accompagnements" (contient la liste des accompagnements)-->
 		<accompagnements>
 				<!-- accompagnement à base de frites  -->
 				<categorie id = "frites">
@@ -66,7 +66,7 @@
 				
 		</accompagnements>
 	
-		<!--sub-child "desserts" (contient la liste des desserts)-->
+		<!-- child "desserts" (contient la liste des desserts)-->
 		<desserts>
 				
 				<!-- dessert à base de fruit -->

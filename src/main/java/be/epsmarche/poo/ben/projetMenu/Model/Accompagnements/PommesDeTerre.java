@@ -10,11 +10,11 @@ import be.epsmarche.poo.ben.projetMenu.Patterns.*;
 public class PommesDeTerre extends PlatDecorator {
 
 	/**
-	 * Prix de l'accompagnement à base de pomme de terre
+	 * @param Prix de l'accompagnement à base de pomme de terre
 	 */
 	protected Double prixPommesDT;
 	/**
-	 * Type d'accompagnement à base de pomme de terre
+	 * @param Type d'accompagnement à base de pomme de terre
 	 */
 	protected String typePommesDT;
 	
@@ -49,7 +49,7 @@ public class PommesDeTerre extends PlatDecorator {
 
 	@Override
 	public void setPrix(Double prix) {
-
+		this.prixPommesDT = prix;
 	}
 
 	/**

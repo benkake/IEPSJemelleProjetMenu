@@ -6,12 +6,12 @@ package be.epsmarche.poo.ben.projetMenu.Model.Plat;
  */
 public class Volaille implements Iplat {
 	/**
-	 * Prix du plat
+	 *@param Prix du plat
 	 */
 	//protected Double prix = 12.5;
 	protected Double prix;
 	/**
-	 * Type de plat
+	 *@param Type de plat
 	 */
 	//protected String type = "Steak de dindon";
 	protected String type;

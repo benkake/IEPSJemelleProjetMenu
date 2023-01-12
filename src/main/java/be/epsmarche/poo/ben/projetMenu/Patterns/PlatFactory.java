@@ -19,8 +19,7 @@ public class PlatFactory {
 	 * @param categorieDePlat
 	 * @param typePlat
 	 * @param prixPlat
-	 * @return un plat 
-	 * en fonction de la catégorie de plat choisie
+	 * @return un plat en fonction de la catégorie de plat choisie
 	 * (soient à base de viande, de volaille ou de poisson)
 	 */
 
@@ -38,6 +37,4 @@ public class PlatFactory {
 		return null;
 	}
  
-	
-	
 }

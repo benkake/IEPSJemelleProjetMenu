@@ -10,11 +10,11 @@ import be.epsmarche.poo.ben.projetMenu.Patterns.*;
 public class Pates extends PlatDecorator {
 
 	/**
-	 * Prix de l'accompagnement à base de pates
+	 *@param Prix de l'accompagnement à base de pates
 	 */
 	protected Double prixPates;
 	/**
-	 * Type d'accompagnement à base de pates
+	 *@param Type d'accompagnement à base de pates
 	 */
 	protected String typePates;
 
@@ -34,7 +34,7 @@ public class Pates extends PlatDecorator {
 	 * @param prixPates
 	 * @param typePates
 	 */
-	public Pates(Iplat platDecore, Double prixPates, String typePates) {
+	public Pates(Iplat platDecore,String typePates, Double prixPates) {
 		super(platDecore);
 		this.prixPates = prixPates;
 		this.typePates = typePates;

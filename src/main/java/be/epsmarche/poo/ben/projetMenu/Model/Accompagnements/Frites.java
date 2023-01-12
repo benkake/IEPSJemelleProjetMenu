@@ -1,7 +1,7 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Accompagnements;
 
-import be.epsmarche.poo.ben.projetMenu.Model.Plat.*;
-import be.epsmarche.poo.ben.projetMenu.Patterns.*;
+import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
+import be.epsmarche.poo.ben.projetMenu.Patterns.PlatDecorator;
 
 /**
  * Classe définissant un accompagnement à base de type Frites
@@ -10,15 +10,16 @@ import be.epsmarche.poo.ben.projetMenu.Patterns.*;
 public class Frites extends PlatDecorator {
 	
 	/**
-	 * Prix de l'accompagnement à base  de frites
+	 *@param Prix de l'accompagnement à base  de frites
 	 */
 	protected Double prixFrites;
 	
 	/**
-	 * Type d'accompagnement à base de frites
+	 *@paramType d'accompagnement à base de frites
 	 */
 	protected String typeFrites;
 	
+
 	/**
 	 * Constructeur à 1 paramètre
 	 * @param platDecore

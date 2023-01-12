@@ -1,28 +1,29 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Carte;
 
 public class Choix {
+
     /**
-     * @param id  d'une catégorie ou d'un plat
+     *  id  d'un composant du menu
      */
     private String id;
 
     /**
-     * @param categorie de produit composant le menu
+     *  categorie de produit composant le menu
      */
     private String categorie;
 
     /**
-     * @param type de produit composant le plat ou l'accompagnement ou le dessert
+     *  type de produit composant le plat ou l'accompagnement ou le dessert
      */
     private String type;
 
     /**
-     * @param prix du produit
+     *  prix du produit
      */
     private  Double prix;
 
     /**
-     * @param description du produit
+     *  description du produit
      */
     private String description;
 

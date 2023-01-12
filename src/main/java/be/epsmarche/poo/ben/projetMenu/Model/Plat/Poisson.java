@@ -6,12 +6,11 @@ package be.epsmarche.poo.ben.projetMenu.Model.Plat;
 public class Poisson implements Iplat {
 
 	/**
-	 * Prix du plat
+	 *@param Prix du plat
 	 */
-	//protected Double prix = 11.5;
 	protected Double prix;
 	/**
-	 * Type de plat
+	 *@param Type de plat
 	 */
 	//protected String type = "Steak de thon rouge";
 	protected String type;
@@ -56,7 +55,6 @@ public class Poisson implements Iplat {
 	public String getType() {
 		return this.type;
 	}
-
 	@Override
 	public void setType(String type) {
 		this.type = type;
@@ -70,7 +68,7 @@ public class Poisson implements Iplat {
 		return getType() + " mariné à la farine de blé";
 	}
 	/**
-	 * @return au format lisible le prix et le type de plat à base de poisson
+	 * @return au format lisible la méthode getPreparation()
 	 */
 	@Override
 	public String toString() {

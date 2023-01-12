@@ -99,5 +99,4 @@ public class Test03LesCartes {
 		assertThat(dessertTest.getPrix()).isEqualTo(5.0);
 		System.out.println("Test contenu d'un dessert OK!");
 	}
-
 }

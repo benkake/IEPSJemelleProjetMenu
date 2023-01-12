@@ -5,7 +5,7 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 import be.epsmarche.poo.ben.projetMenu.Patterns.*;
 
 /**
- * Classe définissant le dessert de type fruit
+ * Classe définissant un dessert à base de fruit
  * @author ben
  */
 public class Fruit extends PlatDecorator {
@@ -21,7 +21,7 @@ public class Fruit extends PlatDecorator {
 	protected String typeDstFruit;
 	
 	/**
-	 * Constructeur de dessert
+	 * Constructeur de dessert à base de fruit
 	 * @param menu
 	 * @param prix
 	 * @param type
@@ -33,11 +33,11 @@ public class Fruit extends PlatDecorator {
 	}
 	
 	/**
-	 * @return le plat garni avec le type de dessert
+	 * @return le plat garni avec le type de dessert à base de fruit
 	 */
 	@Override
 	public String getPeparation() {
-		return platDecore.getPeparation()+ "\nDessert: "+getType();
+		return platDecore.getPeparation()+ "\n >Dessert: "+getType();
 	}
 	
 	/**
@@ -50,7 +50,9 @@ public class Fruit extends PlatDecorator {
 	}
 
 	/**
-	 * @return le prix le prix du plat + le prix de l'accompagnement + le prix du dessert
+	 * @return le prix le prix du plat 
+	 * + le prix de l'accompagnement 
+	 * + le prix du dessert à base de fruit
 	 */
 	@Override
 	public Double getPrix() {
@@ -68,11 +70,12 @@ public class Fruit extends PlatDecorator {
 	}
 	
 	/**
-	 * Affiche le menu comprenant le plat + accompagnement + dessert
+	 * Affiche (lisiblement)le menu comprenant:
+	 * le plat + accompagnement + dessert à base de fruit
 	 */
 	@Override
 	public String toString() {
-		return "<> " + getPeparation() +"\n";
+		return "<> " + getPeparation()+"\n";
 	}
 
 }
