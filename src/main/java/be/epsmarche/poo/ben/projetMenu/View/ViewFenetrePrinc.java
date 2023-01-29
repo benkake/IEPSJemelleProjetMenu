@@ -38,7 +38,7 @@ public class ViewFenetrePrinc extends JFrame implements ActionListener {
 	 *  Sous-menu du menu démarrer: exit.
 	 *  il permet de sortir du prgramme après confirmation.
 	 */
-	private final JMenuItem exit = new JMenuItem();
+	private JMenuItem quitter = new JMenuItem("Sortir du Programme");
 	
 	/** menu Commander.
 	 * Affiche la page principale où s'effectue les commandes
@@ -54,18 +54,23 @@ public class ViewFenetrePrinc extends JFrame implements ActionListener {
 	/**
 	 * Sous-menu afficher
 	 * Permet d'acceder aux affichages des diférents relavifs à la gestion des commandes.
-	 * A cet effet, il donne accès aux sous-menus suivants: 
+	 * A cet effet, il donne accès aux menus items suivants: 
 	 * @see commandeCourante
 	 * @see etatsEncaissements
 	 * @see listeCommandes
 	 * @see statistiques
 	 */
-	private final JMenuItem afficher = new JMenuItem();
+	
 	/**
 	 * L'objet StringBuilder txt permet de concaténer des chaines de caractères modifiables.
 	 * Comparativement au StringBuffer, cet objet txt n'est pas thread-safe(donc ne peut-etre executé simultannéement). 
 	 * Mais il a l'avantage d'être rapide du point de vue de l'iplémentation. 
 	 */
+//	private final JMenuItem commandeCourante = new JMenuItem();
+//	private final JMenuItem listeDesCommandes = new JMenuItem();
+//	private final JMenuItem etatDesEncaiss = new JMenuItem();
+//	private final JMenuItem statistiques = new JMenuItem();
+
 	private final StringBuilder txt = new StringBuilder();
 	/**
 	 * Création d'un conteneur de type panel 
@@ -102,34 +107,12 @@ public class ViewFenetrePrinc extends JFrame implements ActionListener {
 		JLabel label = new JLabel();
 		panel.add(label);
 		
-		// instanciation de la barre de menus
-		JMenuBar barreDeMenu = new JMenuBar();
-		
 		// Insertion de la barre de menu dans le frame
-		setJMenuBar(barreDeMenu);
+		setJMenuBar(createBarreDeMenu());
 		
-		// Création menu 
-		JMenu demarrer = new JMenu("Demarrer");
-		demarrer.setPreferredSize(new Dimension(100,40));
-		barreDeMenu.add(demarrer);
-		JMenuItem exit = new JMenuItem("Exit");
-		demarrer.add(exit);
-		exit.addActionListener(this);
+		// Positionnement des panels
+		PanelsPositions();
 		
-		JMenu commander = new JMenu("Commander");
-		commander.setPreferredSize(new Dimension(120,40));
-		barreDeMenu.add(commander);
-		
-		JMenu etatsDeGest = new JMenu("Etats de gestion");
-		etatsDeGest.setPreferredSize(new Dimension(120,40));
-		barreDeMenu.add(etatsDeGest);
-		JMenuItem afficher = new JMenuItem("Afficher");
-		etatsDeGest.add(afficher);
-		afficher.addActionListener(this);
-		
-		contenu.add(createLeftPanel(),BorderLayout.WEST);
-		contenu.add(createRightPanel(),BorderLayout.EAST);
-		contenu.add(createDownPanel(),BorderLayout.SOUTH);
 	}
 	/**
 	 * 
@@ -139,16 +122,67 @@ public class ViewFenetrePrinc extends JFrame implements ActionListener {
 		Object source = e.getSource();
 	// TODO A configurer pour la sortie du program(tuto prof)
 	// Voir le rôle du controleur dans le tuto prof
-//		StringBuilder txt = new StringBuilder();
-//		txt.append("Action relative à la commande");
-//		
-//		if(source == exit) {
-//			txt.append("Le sous-menu exit s'affiche");
-//		}
-////		if(source == afficher) {
-////			txt.append("Le sous-menu affichage s'affiche");
-////		}
-//		label.setText(txt.toString());
+
+	}
+	
+	private JMenuBar createBarreDeMenu() {
+		
+		JMenuBar barreDeMenu = new JMenuBar();
+		
+		JMenu demarrer = new JMenu("Demarrer");
+		demarrer.setPreferredSize(new Dimension(100,40));
+		barreDeMenu.add(demarrer);
+		//exit = new JMenuItem("Exit");
+		quitter.addActionListener(this::exitConfirmation);
+		demarrer.add(quitter);
+		quitter.addActionListener(this);
+		
+		JMenu commander = new JMenu("Commander");
+		commander.setPreferredSize(new Dimension(120,40));
+		barreDeMenu.add(commander);
+		
+		JMenu etatsDeGest = new JMenu("Etats de gestion");
+		etatsDeGest.setPreferredSize(new Dimension(120,40));
+		barreDeMenu.add(etatsDeGest);
+		
+		JMenu afficher = new JMenu("Afficher");
+		etatsDeGest.add(afficher);
+		afficher.addActionListener(this);
+		
+		JMenuItem commandeCourante = new JMenuItem("Commande courante");
+		afficher.add(commandeCourante);
+		commandeCourante.addActionListener(this);
+		
+		JMenuItem listeDesCommandes = new JMenuItem("Liste des commandes");
+		afficher.add(listeDesCommandes);
+		listeDesCommandes.addActionListener(this);
+		
+		JMenuItem etatDesEncaiss = new JMenuItem("Etat des encaissements");
+		afficher.add(etatDesEncaiss);
+		etatDesEncaiss.addActionListener(this);
+		
+		JMenuItem statistiques = new JMenuItem("Statistiques");
+		afficher.add(statistiques);
+		statistiques.addActionListener(this);
+		
+		return barreDeMenu;
+	}
+	/**
+	 * Confirme la sortie du programme si la réponse à la question est oui.
+	 * Le programme continue si la réponse est non!
+	 * @param event
+	 */
+	private void exitConfirmation(ActionEvent event) {
+	    if(JOptionPane.showConfirmDialog(quitter,"Voulez-vous quitter le programme ?","Gestionnaire de commandes",
+	    		JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+	    System.exit(ABORT);  
+	}
+	
+	
+	private void PanelsPositions() {
+		contenu.add(createLeftPanel(),BorderLayout.WEST);
+		contenu.add(createRightPanel(),BorderLayout.EAST);
+		contenu.add(createDownPanel(),BorderLayout.SOUTH);
 	}
 	
 	private JPanel createLeftPanel() {
