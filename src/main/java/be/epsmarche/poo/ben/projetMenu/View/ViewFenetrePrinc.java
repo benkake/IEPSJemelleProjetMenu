@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -24,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 /**
  * Classe définissant la fenetre principale.
  * Cette fenetre sera ouverte en permanance 
@@ -82,7 +82,8 @@ public class ViewFenetrePrinc extends JFrame implements ItemListener {
 	private Container contenu = new Container();
 	
 	// Création des labels
-	private static JLabel labelQuestPlat, labelPlatType, labelQuestAcc, labelAccomType, labelQuestDess, labelDessType;
+	private static JLabel labelQuestPlat, labelPlatType, labelQuestAcc, labelAccomType, labelQuestDess, labelDessType,labelEntete,labelEntete2, labelEnteteTab;
+
 	private static JComboBox comboBox1, comboBox2, comboBox3;
 	
 	
@@ -202,7 +203,11 @@ public class ViewFenetrePrinc extends JFrame implements ItemListener {
 	
 	
 	private JPanel createLeftPanel() {
-		JPanel leftPanel = new JPanel(new GridLayout(6,1));
+		JPanel leftPanel = new JPanel(new GridLayout(7,1));
+		labelEnteteTab = new JLabel("");
+		labelEnteteTab.setFont(new Font("serif",Font.ITALIC,20));
+		leftPanel.add(labelEnteteTab);
+		
 		leftPanel.add(new JButton("Table1"));
 		leftPanel.add(new JButton("Table2"));
 		leftPanel.add(new JButton("Table3"));
@@ -221,60 +226,91 @@ public class ViewFenetrePrinc extends JFrame implements ItemListener {
 		return rightPanel;
 	}
 	
+	// Compacter la methode ci-dessous
+	
 	private JPanel createCentralPanel1() {
-		JPanel centralPanel1 = new JPanel(new GridLayout(3,3));
+		JPanel centralPanel1 = new JPanel(new GridLayout(5,0));
+		
 		// Les des plats
-		String listeDesPlats[]= {"Steak de mouton","Steak de poisson","Steak de volaille"};
+		String listeDesPlats[]= {"Steak de mouton","Steak de poisson","Steak de volaille"};		
 		// Liste des desserts
 		String listeDesAccomp[]= {"Frite de Manioc","Macaroni de Sicile","Croquettes de pomme de Terre","Risotto"};
 		// Liste des accompagnemenst
 		String listeDesDesserts[]= {"Salade de fruits tropicaux","Crêpe à la crème au chocolat","Milkshake à la vanille","Cognac de bourgogne"};
 		comboBox1 = new JComboBox<String>(listeDesPlats);
 		comboBox1.addItemListener(this);
-		comboBox1.setBounds(10,50,50,50);
-		//comboBox1.setBounds(50, 50, 90,20);
+		//comboBox1.setBounds(10,50,50,50);
 		// Création des étiquettes
-		labelQuestPlat = new JLabel("PLAT");
-		labelPlatType = new JLabel(listeDesPlats[0]);
+		// TEST
+		
+		
+		// Labelle d'entete
+		labelEntete = new JLabel("Choisir une table et composer..",labelEntete.CENTER);
+		labelEntete.setFont(new Font("comfortaa",Font.ITALIC,25));
+		labelEntete.setForeground(Color.BLUE);
+		labelEntete.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		labelEntete2 = new JLabel("la commande en 3 étapes",labelEntete2.CENTER);
+		labelEntete2.setFont(new Font("comfortaa",Font.ITALIC,25));
+		labelEntete2.setForeground(Color.BLUE);
+		labelEntete.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		
+		//centralPanel1.add(labelEntete);
+		labelQuestPlat = new JLabel("Etape 1/3: CHOISISSEZ UN PLAT ",labelQuestPlat.RIGHT);
+		labelQuestPlat.setFont(new Font("comfortaa",Font.BOLD,15));
+		labelQuestPlat.setForeground(Color.BLUE);
+		labelPlatType = new JLabel(listeDesPlats[0],labelPlatType.LEFT );
 		// Couleur du texte
 		labelPlatType.setForeground(Color.RED);
-		// Ajouter comboBox et Label au panel
+		
+		// Ajouter le premier comboBox et Label au panel
+		centralPanel1.add(labelEntete);
+		centralPanel1.add(labelEntete2);
 		centralPanel1.add(labelQuestPlat);
 		centralPanel1.add(comboBox1);
-		centralPanel1.add(labelPlatType);
+		// Affiche les résultats du choix
+		//centralPanel1.add(labelPlatType);
 		
 		
 		// Les accompagnements
 		comboBox2 = new JComboBox<String>(listeDesAccomp);
 		comboBox2.addItemListener(this);
-		comboBox2.setBounds(10,50,50,50);
+		//comboBox2.setBounds(10,50,50,50);
 		// Création des étiquettes
-		labelQuestAcc = new JLabel("ACCOMPAGNEMENT");
-		labelAccomType = new JLabel(listeDesAccomp[0]);
+		labelQuestAcc = new JLabel("Etape 2/3: CHOISISSEZ UN ACCOMPAGNEMENT ", labelQuestAcc.RIGHT);
+		labelQuestAcc.setFont(new Font("comfortaa",Font.BOLD,15));
+		labelQuestAcc.setForeground(Color.BLUE);
+		labelAccomType = new JLabel(listeDesAccomp[0], labelAccomType.LEFT);
 		// Couleur du texte
 		labelAccomType.setForeground(Color.BLUE);
 		// Ajouter comboBox et Label au panel
 		centralPanel1.add(labelQuestAcc);
 		centralPanel1.add(comboBox2);
-		centralPanel1.add(labelAccomType);
+		// Affiche le résultat du choix
+		//centralPanel1.add(labelAccomType);
 		
 
 		// Les Desserts
 		comboBox3 = new JComboBox<String>(listeDesDesserts);
 		comboBox3.addItemListener(this);
-		comboBox3.setBounds(10,50,50,50);
+		//comboBox3.setBounds(10,50,50,50);
 		// Création des étiquettes
-		labelQuestDess = new JLabel("DESSERT");
-		labelDessType = new JLabel(listeDesDesserts[0]);
+		labelQuestDess = new JLabel("Etape 3/3: CHOISISSEZ UN DESSERT ", labelQuestDess.RIGHT);
+		labelQuestDess.setFont(new Font("comfortaa",Font.BOLD,15));
+		labelQuestDess.setForeground(Color.BLUE);
+		labelDessType = new JLabel(listeDesDesserts[0],labelDessType.LEFT);
 		// Couleur du texte
-		labelDessType.setForeground(Color.GRAY);
+		labelDessType.setForeground(Color.darkGray);
 		// Ajouter comboBox et Label au panel
 		centralPanel1.add(labelQuestDess);
 		centralPanel1.add(comboBox3);
-		centralPanel1.add(labelDessType);
+		//centralPanel1.add(labelDessType);
+	
 		
 		return centralPanel1;
 	}
+	
 	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
