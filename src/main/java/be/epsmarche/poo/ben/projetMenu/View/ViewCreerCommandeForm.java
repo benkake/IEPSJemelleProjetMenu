@@ -11,8 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,18 +26,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-
+//import be.epsmarche.poo.ben.projetMenu.Controller.IPlat;
 import be.epsmarche.poo.ben.projetMenu.Controller.MenuController;
+import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Frites;
+import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Pates;
+import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.PommesDeTerre;
+import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Riz;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Carte;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Choix;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Loader;
 import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.AccompagnementFactory;
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.DessertFactory;
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.PlatFactory;
 import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 
 /**
@@ -49,44 +48,21 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
  * @author ben
  */
 public class ViewCreerCommandeForm extends JFrame implements ItemListener, ActionListener {
-	
+
 	private Carte carte = null;
-	private Choix elementChoisi, accompChoisi, dessChoisi;
-	
+	private Choix elementChoisi, platChoisi, accompChoisi, dessChoisi;
 	private static final long serialVersionUID = -8859500785480111589L;
-	private static MenuController contr = null;
+//***---------------------------------------
+	private MenuController contr = new MenuController();
+//***-------------------------------------------
 	private final JMenuBar barreDeMenu = new JMenuBar();
-	/**
-	 * menu Demarrer Donner accès au sous-menu exit.
-	 * 
-	 * @see JMenuItem exit
-	 */
+
 	private final JMenu demarrer = new JMenu("Demarrer");
-	/**
-	 * Sous-menu du menu démarrer: exit. il permet de sortir du prgramme après
-	 * confirmation.
-	 */
+
 	private JMenuItem quitter = new JMenuItem("Sortir du Programme");
-	/**
-	 * menu Commander. Affiche la page principale où s'effectue les commandes
-	 */
-	// private final JMenu commander = new JMenu("Commander");
-	/**
-	 * menu etatsDeGestion. Permet d'avoir une vue globale sur la gestion des
-	 * commandes.
-	 */
-	// private JMenuItem composerCde = new JMenuItem("Composer la commande");
+
 	private final JMenu etatsDeGest = new JMenu("Etats de gestion");
-	/**
-	 * Sous-menu afficher Permet d'acceder aux affichages des diférents relavifs à
-	 * la gestion des commandes. A cet effet, il donne accès aux menus items
-	 * suivants:
-	 * 
-	 * @see commandeCourante
-	 * @see etatsEncaissements
-	 * @see listeCommandes
-	 * @see statistiques
-	 */
+
 	private final JMenu afficher = new JMenu("Afficher");
 	private final JMenuItem commandeCourante = new JMenuItem("Commande courante");
 	private final JMenuItem etatDesEncaiss = new JMenuItem("Etat des encaissements");
@@ -103,34 +79,75 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	/**
 	 * Création d'un conteneur
 	 */
+	private JTextArea editeurDeText = new JTextArea();
 	private Container contenu = new Container();
 
 	// Création des labels
 	private static JLabel labelQuestPlat, labelPlatType, labelQuestAcc, labelAccomType, labelQuestDess, labelDessType,
 			labelEntete, labelEntete2, labelEnteteTab;
 
-	private static JComboBox comboBox1, comboBox2, comboBox3;
+	private static JComboBox<String> comboBox1, comboBox2, comboBox3;
 
-	private String idPlat, idAccomp,idDess;
-	private Iplat menu =null;
-	private static Loader loading = null;
-	private static Commande laCommandes = new Commande("Table1"); 
-	
+	private String platItemSelected, accompItemSelected, dessItemSelected;
+	private Iplat menu;
+//***---------------------------------------------------------
+	private static Loader loadedObjects;
+	private ArrayList<Choix> listePlats = new ArrayList<>();
+	private ArrayList<Choix> listeAccomp = new ArrayList<>();
+	private ArrayList<Choix> listeDess = new ArrayList<>();
+//***-------------------------------------------------------
+	private ArrayList<Choix> listeDesPlats = new ArrayList<>();
+	private ArrayList<Choix> listeAccompagnements = new ArrayList<>();
+	private ArrayList<Choix> listeDesDesserts = new ArrayList<>();
+
+	private Commande laCommande = new Commande();
+	private String numeroDeTable = " 1";
+	private String affichage ="";
 
 	/**
 	 * Le constructeur
 	 */
 	public ViewCreerCommandeForm() {
 		super("Composer la commande");
-		this.contr = new MenuController();
 		this.carte = new Carte();
 		/**
 		 * Configutation de la fenêtre
 		 */
 
-		this.setSize(1000, 600);
+		this.setSize(1100, 700);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		// ***--------------------------------------------------------
+		// récupération dans le controleur des objets chargés par la classe Loader
+		loadedObjects = MenuController.getLoadObject(loadedObjects);
+		/*
+		 * récupération de la liste des plats chargés
+		 */
+		listePlats = carte.getPlatList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
+		/**
+		 * Mise à jour de la liste des plats sur la carte
+		 */
+		carte.setListeDesPlats(listePlats);
+
+		/*
+		 * récupération de la liste des accompagnements chargés
+		 */
+		listeAccomp = carte.getAccompList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
+		/**
+		 * Mise à jour de la liste des accompagnements sur la carte
+		 */
+		carte.setListeDesAccompagnements(listeAccomp);
+
+		/*
+		 * récupération de la liste des desserts chargés
+		 */
+		listeDess = carte.getDessList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
+		/**
+		 * Mise à jour de la liste des accompagnements sur la carte
+		 */
+		carte.setListeDesDesserts(listeDess);
+
+		// ***-----------------------------------------------------------
 
 		contenu = (JPanel) this.getContentPane();
 
@@ -146,53 +163,43 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		// Insertion de la barre de menu dans le frame
 		setJMenuBar(createBarreDeMenu());
 
-		// **********Positionnement des panels
-		// TODO En cliquant sur le menu Commander l'on doit
-		// accéder à la page créée par la fonction ci-dessous
-
+		// positionnement des panels
 		PanelsPositions();
 
 	}
 
-	public String getIdPlat() {
-		return idPlat;
+	public String getPlatItemSelected() {
+		return platItemSelected;
 	}
 
-	public void setIdPlat(String idPlat) {
-		this.idPlat = idPlat;
+	public void setPlatItemSelected(String platItemSelected) {
+		this.platItemSelected = platItemSelected;
 	}
 
-	public String getIdAccomp() {
-		return idAccomp;
+	public String getAccompItemSelected() {
+		return accompItemSelected;
 	}
 
-	public void setIdAccomp(String idAccomp) {
-		this.idAccomp = idAccomp;
+	public void setAccompItemSelected(String accompItemSelected) {
+		this.accompItemSelected = accompItemSelected;
 	}
 
-	public String getIdDess() {
-		return idDess;
+	public String getDessItemSelected() {
+		return dessItemSelected;
 	}
 
-	public void setIdDess(String idDess) {
-		this.idDess = idDess;
+	public void setDessItemSelected(String dessItemSelected) {
+		this.dessItemSelected = dessItemSelected;
 	}
 
 	private JMenuBar createBarreDeMenu() {
 
-		// JMenuBar barreDeMenu = new JMenuBar();
-
-//		JMenu demarrer = new JMenu("Demarrer");
 		demarrer.setPreferredSize(new Dimension(100, 40));
 		barreDeMenu.add(demarrer);
 		// exit = new JMenuItem("Exit");
 		quitter.addActionListener(this::actionPerformed);
 		demarrer.add(quitter);
-//		//commander.setPreferredSize(new Dimension(120,40));
-//		
-//		barreDeMenu.add(commander);
 
-//		JMenu etatsDeGest = new JMenu("Etats de gestion");
 		etatsDeGest.setPreferredSize(new Dimension(120, 40));
 		barreDeMenu.add(etatsDeGest);
 
@@ -219,18 +226,6 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		return barreDeMenu;
 	}
 
-	/**
-	 * Confirme la sortie du programme si la réponse à la question est oui. Le
-	 * programme continue si la réponse est non!
-	 * 
-	 * @param source
-	 */
-	private void exitConfirmation(Object source) {
-		if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
-				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-			System.exit(ABORT);
-	}
-
 	private void PanelsPositions() {
 		contenu.add(createLeftPanel(), BorderLayout.WEST);
 		contenu.add(createRightPanel(), BorderLayout.EAST);
@@ -254,32 +249,32 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	}
 
 	private JPanel createRightPanel() {
-		JPanel rightPanel = new JPanel(new GridLayout(1, 1));
-		JTextArea editeurDeText = new JTextArea("Affichage texte ici");
-		// editeurDeText.setPreferredSize(new Dimension(750, 0));
+		editeurDeText = new JTextArea(80,40);
+		editeurDeText.getText();
 		JScrollPane scrollEdit = new JScrollPane(editeurDeText);
+		scrollEdit.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollEdit.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		JPanel rightPanel = new JPanel(new GridLayout(1, 1));
 		rightPanel.add(scrollEdit);
+	
+		scrollEdit.revalidate();
 		return rightPanel;
 	}
 
-	// Compacter la methode ci-dessous
+	
 
 	private JPanel createCentralPanel1() {
 		JPanel centralPanel1 = new JPanel(new GridLayout(5, 0));
 
-		// Liste des plats
-		String listeDesPlats[] = { "steakViande", "steakPoisson", "steakVolaille" };
-		// Liste des desserts
-		// Liste des accompagnemenst
-		String listeDesAccomp[] = { "manioc", "macaroni", "croquettes","risotto" };
-		// Liste des desserts
-		String listeDesDesserts[] = { "multifruit", "crepe","milkshake", "cognac" };
+		// récupération des id des plats et leur chargement sur la combobox en tant que
+		// itemm
+		List<String> listeDesIdPlats = new ArrayList<>();
+		listeDesIdPlats = carte.getListeDesIds(carte.getListeDesPlats()); // !!!!!!OK OK OOK
+		comboBox1 = new JComboBox<String>(carte.castListeDesId(listeDesIdPlats));
 
-		comboBox1 = new JComboBox<String>(listeDesPlats);
+		comboBox1.setPreferredSize(new Dimension(200, 30));
 		comboBox1.addItemListener(this);
-		// comboBox1.setBounds(10,50,50,50);
-		// Création des étiquettes
-		// TEST
 
 		// Labelle d'entete
 		labelEntete = new JLabel("Choisir une table et composer..", labelEntete.CENTER);
@@ -292,52 +287,61 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		labelEntete2.setForeground(Color.BLUE);
 		labelEntete.setHorizontalAlignment(SwingConstants.RIGHT);
 
-		// centralPanel1.add(labelEntete);
+		centralPanel1.add(labelEntete);
 		labelQuestPlat = new JLabel("Etape 1/3: CHOISISSEZ UN PLAT ", labelQuestPlat.RIGHT);
 		labelQuestPlat.setFont(new Font("comfortaa", Font.BOLD, 15));
 		labelQuestPlat.setForeground(Color.BLUE);
-		labelPlatType = new JLabel(listeDesPlats[0], labelPlatType.LEFT);
+		labelPlatType = new JLabel(listeDesIdPlats.get(0), labelPlatType.RIGHT);
 		// Couleur du texte
 		labelPlatType.setForeground(Color.RED);
 
-		
-		
 		centralPanel1.add(labelEntete);
 		centralPanel1.add(labelEntete2);
 		centralPanel1.add(labelQuestPlat);
 
 		centralPanel1.add(comboBox1);
-		// Affiche les résultats du choix
 		// centralPanel1.add(labelPlatType);
 
-		// Les accompagnements
-		comboBox2 = new JComboBox<String>(listeDesAccomp);
+		// les ACCOMPAGNEMENTS
+
+		// récupération des id des accompagnement et leur chargement sur la combobox
+		// comme item
+		List<String> listeDesIdAccomp = new ArrayList<>();
+		listeDesIdAccomp = carte.getListeDesIds(carte.getListeDesAccompagnements()); // !!!!!!OK OK OOK
+		comboBox2 = new JComboBox<String>(carte.castListeDesId(listeDesIdAccomp));
+		comboBox2.setPreferredSize(new Dimension(200, 30));
 		comboBox2.addItemListener(this);
-		// comboBox2.setBounds(10,50,50,50);
+
+//		
 		// Création des étiquettes
 		labelQuestAcc = new JLabel("Etape 2/3: CHOISISSEZ UN ACCOMPAGNEMENT ", labelQuestAcc.RIGHT);
 		labelQuestAcc.setFont(new Font("comfortaa", Font.BOLD, 15));
 		labelQuestAcc.setForeground(Color.BLUE);
-		labelAccomType = new JLabel(listeDesAccomp[0], labelAccomType.LEFT);
+		labelAccomType = new JLabel(listeDesIdAccomp.get(0), labelAccomType.LEFT);
 		// Couleur du texte
-		labelAccomType.setForeground(Color.BLUE);
+		labelAccomType.setForeground(Color.RED);
 		// Ajouter comboBox et Label au panel
 		centralPanel1.add(labelQuestAcc);
 		centralPanel1.add(comboBox2);
 		// Affiche le résultat du choix
 		// centralPanel1.add(labelAccomType);
 
-		// Les Desserts
-		comboBox3 = new JComboBox<String>(listeDesDesserts);
+		// Les DESSERTS
+		// récupération des id des accompagnement et leur chargement sur la combobox
+		// comme item
+		List<String> listeDesIdDess = new ArrayList<>();
+		listeDesIdDess = carte.getListeDesIds(carte.getListeDesDesserts()); // !!!!!!OK OK OOK
+		comboBox3 = new JComboBox<String>(carte.castListeDesId(listeDesIdDess));
+		comboBox3.setPreferredSize(new Dimension(200, 30));
 		comboBox3.addItemListener(this);
 		// comboBox3.setBounds(10,50,50,50);
 		// Création des étiquettes
 		labelQuestDess = new JLabel("Etape 3/3: CHOISISSEZ UN DESSERT ", labelQuestDess.RIGHT);
 		labelQuestDess.setFont(new Font("comfortaa", Font.BOLD, 15));
 		labelQuestDess.setForeground(Color.BLUE);
-		labelDessType = new JLabel(listeDesDesserts[0], labelDessType.LEFT);
+		labelDessType = new JLabel(listeDesIdDess.get(0), labelDessType.LEFT);
 		// Couleur du texte
-		labelDessType.setForeground(Color.darkGray);
+		labelDessType.setForeground(Color.RED);
 		// Ajouter comboBox et Label au panel
 		centralPanel1.add(labelQuestDess);
 		centralPanel1.add(comboBox3);
@@ -363,7 +367,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		ajouterMenu.setPreferredSize(new Dimension(20, 40));
 		downPanel.add(ajouterMenu);
 
-		JButton enregCommand = new JButton("Enregistrer la Commande");
+		JButton enregCommand = new JButton("annuler dernier menu");
 		enregCommand.setPreferredSize(new Dimension(20, 40));
 		enregCommand.addActionListener(this);
 		downPanel.add(enregCommand);
@@ -380,90 +384,60 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		Object source = e.getSource();
 		String event = e.getActionCommand();
 
-		// Gestion des sources menuItems
 		if (source == quitter) {
 			exitConfirmation(source);
 		}
-		// Gestion des événements
 
 		if (event.equals("Ajouter Menu")) {
-			// Instanciation de la carte
-	
-			try {
-				loading = new Loader("menu.xml");
-			} catch (ParserConfigurationException | SAXException | IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			loading.creationPlats();
-			ArrayList<Choix> listeDesPlats = Carte.getSingleInstance().getListeDesPlats();
-			loading.creationAccompagnements();
-			ArrayList<Choix> listeAccompagnements = Carte.getSingleInstance().getListeDesAccompagnements();
-			loading.creationDessert();
-			ArrayList<Choix> listeDesDesserts = Carte.getSingleInstance().getListeDesDesserts();
-			
-			System.out.println("Les catégories ont été chargées sur la carte");
-			System.out.println(" Nombre de plats sur la carte: "+listeDesPlats.size());
-			System.out.println(" Nombre d'accompagnements sur la carte: "+listeAccompagnements.size());
-			System.out.println(" Nombre de dessert sur la carte: "+listeDesDesserts.size());
-			
-			
-			// Choix des éléments du menu sur la carte
-//			String selectedItem = (String) comboBox1.getSelectedItem();
-//
-//			
-//			if(selectedItem.contentEquals(getIdPlat()))
-//				setIdPlat(selectedItem);
-//				System.out.println("Plat Selectionné: "+carte.getPlatChoisi(getIdPlat()));
+//**---------------------------------------------------------------
+			listeDesPlats = listePlats;
 
-			setIdPlat(comboBox1.getSelectedItem().toString());
-			System.out.println("IdPlatSelectionné: "+getIdPlat());
-			//Faire une boucle qui retourne le choix
-			// En fonction des sorties des comboBox
-			
-			elementChoisi = listeDesPlats.get(0);
-			System.out.println("Description du plat choisi: *******: "+elementChoisi.getDescription());
-			System.out.println("Prix du plat choisi: *******: "+elementChoisi.getPrix());
-			
-			setIdAccomp(comboBox2.getSelectedItem().toString());
-			System.out.println("IdAccompSelectionné: "+getIdAccomp());
-			
-			setIdDess(comboBox3.getSelectedItem().toString());
-			System.out.println("IdDessertSelectionné: "+getIdDess());
-			System.out.println("Les comboBox fonctionnent bien");
-			
-			
-		///------------------------------------	
-			Choix elementChoisi = carte.getPlatChoisi(getIdPlat());
-			Choix accompChoisi = carte.getAccompagnementChoisi(getIdAccomp());
-			Choix dessertChoisi = carte.getDessertChoisi(getIdDess());
-			
-			
-	//--------------------------ça ne fonctionne pas à partir d'ici
-			menu = contr.getMenuSelected(elementChoisi, accompChoisi, dessertChoisi);
-			//menu = getMenuSelected(elementChoisi, accompChoisi, dessertChoisi);
-			laCommandes.addMenu(menu);
-			
-			System.out.println("Nombre de menu dans la commande: "+laCommandes.getListeMenu().size());
-			System.out.println("La commande\n");
-			
+			listeAccompagnements = listeAccomp;
+
+			listeDesDesserts = listeDess;
+
+			setPlatItemSelected(comboBox1.getSelectedItem().toString());
+			platChoisi = carte.getPlatChoisi(getPlatItemSelected());
+
+			setAccompItemSelected(comboBox2.getSelectedItem().toString());
+			accompChoisi = carte.getAccompagnementChoisi(getAccompItemSelected());
+
+			setDessItemSelected(comboBox3.getSelectedItem().toString());
+			dessChoisi = carte.getDessertChoisi(getDessItemSelected());
+
+			// ToDo: remplacer le numeroDeTable par le item selected des tables avec une
+			// méthode qui switch en fonction de la table choisie
+
+			laCommande.setNumTab(numeroDeTable);
+			menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
+			laCommande.addMenu(menu);
+
+			setPlatItemSelected(null);
+			setAccompItemSelected(null);
+			setDessItemSelected(null);
+
+			affichage = laCommande.displayCommand();
+			editeurDeText.setText(affichage);
+
 		}
+//ToDo: a revoir si nécessaire
+		//		if(event.equals("annuler dernier menu")) {
+//			laCommande.removeLastMenu();
+//			editeurDeText.setText(affichage);
+//		}
 
 	}
-	
-	public Iplat getMenuSelected(Choix plat, Choix accomp, Choix dess) {
 
-		PlatFactory fabricPlat = new PlatFactory();
-		Iplat menuChoisi = fabricPlat.getPlat(plat.getCategorie(), plat.getType(), plat.getPrix());
-		AccompagnementFactory fabricAccomp = new AccompagnementFactory();
-		menuChoisi = fabricAccomp.getAccomp(accomp.getCategorie(), menuChoisi, accomp.getType(), accomp.getPrix());
-		DessertFactory fabricDess = new DessertFactory();
-		menuChoisi = fabricDess.getDess(dess.getCategorie(), menuChoisi, dess.getType(), dess.getPrix());
-		return menuChoisi;
+	/**
+	 * Confirme la sortie du programme si la réponse à la question est oui. Le
+	 * programme continue si la réponse est non!
+	 * 
+	 * @param source
+	 */
+	private void exitConfirmation(Object source) {
+		if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
+				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+			System.exit(ABORT);
 	}
-	
-	public boolean verif(Choix elementChoisi) {
-		return elementChoisi == null;
-	}
+
 }
