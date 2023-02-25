@@ -29,10 +29,6 @@ import javax.swing.SwingConstants;
 
 //import be.epsmarche.poo.ben.projetMenu.Controller.IPlat;
 import be.epsmarche.poo.ben.projetMenu.Controller.MenuController;
-import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Frites;
-import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Pates;
-import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.PommesDeTerre;
-import be.epsmarche.poo.ben.projetMenu.Model.Accompagnements.Riz;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Carte;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Choix;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Loader;
@@ -103,6 +99,8 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private Commande laCommande = new Commande();
 	private String numeroDeTable = " 1";
 	private String affichage ="";
+	
+	private AtauCloseConfirmationMessage autoConf;
 
 	/**
 	 * Le constructeur
@@ -195,12 +193,14 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JMenuBar createBarreDeMenu() {
 
 		demarrer.setPreferredSize(new Dimension(100, 40));
+		demarrer.setFont(new Font("Comforta", Font.ITALIC, 18));
 		barreDeMenu.add(demarrer);
 		// exit = new JMenuItem("Exit");
 		quitter.addActionListener(this::actionPerformed);
 		demarrer.add(quitter);
 
-		etatsDeGest.setPreferredSize(new Dimension(120, 40));
+		etatsDeGest.setPreferredSize(new Dimension(160, 40));
+		etatsDeGest.setFont(new Font("Comforta", Font.ITALIC, 18));
 		barreDeMenu.add(etatsDeGest);
 
 		JMenu afficher = new JMenu("Afficher");
@@ -236,21 +236,47 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JPanel createLeftPanel() {
 		JPanel leftPanel = new JPanel(new GridLayout(7, 1));
 		labelEnteteTab = new JLabel("");
-		labelEnteteTab.setFont(new Font("serif", Font.ITALIC, 20));
+		labelEnteteTab.setFont(new Font("Comforta", Font.BOLD, 20));
 		leftPanel.add(labelEnteteTab);
-
-		leftPanel.add(new JButton("Table1"));
-		leftPanel.add(new JButton("Table2"));
-		leftPanel.add(new JButton("Table3"));
-		leftPanel.add(new JButton("Table4"));
-		leftPanel.add(new JButton("Table5"));
-		leftPanel.add(new JButton("Table6"));
+		JButton tab1 = new JButton();
+		tab1.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab1.setText("Table1");
+		leftPanel.add(tab1);
+		
+		JButton tab2 = new JButton();
+		tab2.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab2.setText("Table2");
+		leftPanel.add(tab2);
+		
+		JButton tab3 = new JButton();
+		tab3.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab3.setText("Table3");
+		leftPanel.add(tab3);
+		
+		JButton tab4 = new JButton();
+		tab4.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab4.setText("Table4");
+		leftPanel.add(tab4);
+		
+		JButton tab5 = new JButton();
+		tab5.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab5.setText("Table5");
+		leftPanel.add(tab5);
+		
+		JButton tab6 = new JButton();
+		tab6.setFont(new Font("Comforta", Font.ITALIC, 20));
+		tab6.setText("Table6");
+		leftPanel.add(tab6);
 		return leftPanel;
 	}
 
 	private JPanel createRightPanel() {
-		editeurDeText = new JTextArea(80,40);
+		editeurDeText = new JTextArea(80,30);
 		editeurDeText.getText();
+		editeurDeText.setBackground(Color.darkGray);
+		editeurDeText.setForeground(Color.WHITE);
+		editeurDeText.setFont(new Font("Comforta",Font.PLAIN,13));
+		
 		JScrollPane scrollEdit = new JScrollPane(editeurDeText);
 		scrollEdit.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollEdit.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -274,6 +300,8 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		comboBox1 = new JComboBox<String>(carte.castListeDesId(listeDesIdPlats));
 
 		comboBox1.setPreferredSize(new Dimension(200, 30));
+		comboBox1.setFont(new Font("comfortaa", Font.ITALIC, 32));
+		//comboBox1.setForeground();
 		comboBox1.addItemListener(this);
 
 		// Labelle d'entete
@@ -310,6 +338,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		listeDesIdAccomp = carte.getListeDesIds(carte.getListeDesAccompagnements()); // !!!!!!OK OK OOK
 		comboBox2 = new JComboBox<String>(carte.castListeDesId(listeDesIdAccomp));
 		comboBox2.setPreferredSize(new Dimension(200, 30));
+		comboBox2.setFont(new Font("comfortaa", Font.ITALIC, 32));
 		comboBox2.addItemListener(this);
 
 //		
@@ -333,6 +362,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		listeDesIdDess = carte.getListeDesIds(carte.getListeDesDesserts()); // !!!!!!OK OK OOK
 		comboBox3 = new JComboBox<String>(carte.castListeDesId(listeDesIdDess));
 		comboBox3.setPreferredSize(new Dimension(200, 30));
+		comboBox3.setFont(new Font("comfortaa", Font.ITALIC, 32));
 		comboBox3.addItemListener(this);
 		// comboBox3.setBounds(10,50,50,50);
 		// Création des étiquettes
@@ -363,18 +393,23 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JPanel createDownPanel() {
 		JPanel downPanel = new JPanel(new GridLayout(1, 3));
 		JButton ajouterMenu = new JButton("Ajouter Menu");
+		//ajouterMenu.addActionListener(e->{ new AtauCloseConfirmationMessage(this, "Menu ajouté avec succès", 3);});
 		ajouterMenu.addActionListener(this);
+		
 		ajouterMenu.setPreferredSize(new Dimension(20, 40));
+		ajouterMenu.setFont(new Font("comfortaa", Font.BOLD, 20));
 		downPanel.add(ajouterMenu);
 
 		JButton enregCommand = new JButton("annuler dernier menu");
 		enregCommand.setPreferredSize(new Dimension(20, 40));
 		enregCommand.addActionListener(this);
+		enregCommand.setFont(new Font("comfortaa", Font.BOLD, 20));
 		downPanel.add(enregCommand);
 
 		JButton supprimCommande = new JButton("Supprimer la Commande");
 		supprimCommande.setPreferredSize(new Dimension(20, 40));
 		supprimCommande.addActionListener(this);
+		supprimCommande.setFont(new Font("comfortaa", Font.BOLD, 20));
 		downPanel.add(supprimCommande);
 		return downPanel;
 	}
@@ -412,16 +447,18 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
 			laCommande.addMenu(menu);
 
+
 			setPlatItemSelected(null);
 			setAccompItemSelected(null);
 			setDessItemSelected(null);
 
 			affichage = laCommande.displayCommand();
 			editeurDeText.setText(affichage);
+			new AtauCloseConfirmationMessage(this, "Menu ajouté avec succès", 3);
 
 		}
 //ToDo: a revoir si nécessaire
-		//		if(event.equals("annuler dernier menu")) {
+		//if(event.equals("annuler dernier menu")) {
 //			laCommande.removeLastMenu();
 //			editeurDeText.setText(affichage);
 //		}
