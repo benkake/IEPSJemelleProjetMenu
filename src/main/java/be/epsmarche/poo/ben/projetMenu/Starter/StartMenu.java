@@ -1,24 +1,13 @@
 package be.epsmarche.poo.ben.projetMenu.Starter;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
-import be.epsmarche.poo.ben.projetMenu.View.ViewFenetrePrinc;
+import be.epsmarche.poo.ben.projetMenu.Controller.MenuController;
 
 /**
- * @author ben
- * Classe permettant de lancer le programme
+ * @author ben Classe permettant de lancer le programme
  */
 public class StartMenu {
-	public static void main(String[] args){
-		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		
-		ViewFenetrePrinc wind = new ViewFenetrePrinc();
-		wind.setVisible(true);
+	public static void main(String[] args) {
+		MenuController contr = new MenuController();
+		contr.start();
 	}
 }
