@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,31 +40,27 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
  * Classe définissant la fenetre principale. Cette fenetre sera ouverte en
  * permanance pour effectuer les opérations de commande et accéder aux autres
  * options et sous-options du menu
- * 
  * @version V.3
  * @author ben
  */
 public class ViewCreerCommandeForm extends JFrame implements ItemListener, ActionListener {
 
 	private Carte carte = null;
-	private Choix elementChoisi, platChoisi, accompChoisi, dessChoisi;
+	private Choix platChoisi, accompChoisi, dessChoisi;
 	private static final long serialVersionUID = -8859500785480111589L;
-//***---------------------------------------
-	private MenuController contr = new MenuController();
 //***-------------------------------------------
 	private final JMenuBar barreDeMenu = new JMenuBar();
 
 	private final JMenu demarrer = new JMenu("Demarrer");
 
-	private JMenuItem quitter = new JMenuItem("Sortir du Programme");
+	private JMenuItem quitter = new JMenuItem("Sortir du Programme ?");
 
-	private final JMenu etatsDeGest = new JMenu("Etats de gestion");
+	private final JMenu etatsDeGest = new JMenu("Gestion");
+	private final JMenu Statistiques = new JMenu("Statistiques");
 
-	private final JMenu afficher = new JMenu("Afficher");
-	private final JMenuItem commandeCourante = new JMenuItem("Commande courante");
-	private final JMenuItem etatDesEncaiss = new JMenuItem("Etat des encaissements");
-	private final JMenuItem listeDesCommandes = new JMenuItem("Liste des commandes");
-	private final JMenuItem statistiques = new JMenuItem("Statistiques");
+	private final JMenuItem CommandeDuJour = new JMenuItem("Commande du Jour");
+	private final JMenuItem ToutesLesComandes = new JMenuItem("Toutes les commandes");
+	
 	/**
 	 * Création d'un panel
 	 */
@@ -78,6 +75,11 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JTextArea editeurDeText = new JTextArea();
 	private Container contenu = new Container();
 
+	private String message = "";
+	private JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE,
+			JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
+	private javax.swing.Timer timer = new javax.swing.Timer(1000, e -> optionPane.setValue(JOptionPane.CLOSED_OPTION));
+
 	// Création des labels
 	private static JLabel labelQuestPlat, labelPlatType, labelQuestAcc, labelAccomType, labelQuestDess, labelDessType,
 			labelEntete, labelEntete2, labelEnteteTab;
@@ -91,16 +93,17 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private ArrayList<Choix> listePlats = new ArrayList<>();
 	private ArrayList<Choix> listeAccomp = new ArrayList<>();
 	private ArrayList<Choix> listeDess = new ArrayList<>();
-//***-------------------------------------------------------
-	private ArrayList<Choix> listeDesPlats = new ArrayList<>();
-	private ArrayList<Choix> listeAccompagnements = new ArrayList<>();
-	private ArrayList<Choix> listeDesDesserts = new ArrayList<>();
-
 	private Commande laCommande = new Commande();
-	private String numeroDeTable = " 1";
-	private String affichage ="";
+	private String numeroDeTable;
+	private String affichage = "";
 	
-	private AtauCloseConfirmationMessage autoConf;
+	public String getNumeroDeTable() {
+		return numeroDeTable;
+	}
+
+	public void setNumeroDeTable(String numBoutonTable) {
+		this.numeroDeTable = numBoutonTable;
+	}
 
 	/**
 	 * Le constructeur
@@ -139,7 +142,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		/*
 		 * récupération de la liste des desserts chargés
 		 */
-		listeDess = carte.getDessList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
+		listeDess = carte.getDessList(); 
 		/**
 		 * Mise à jour de la liste des accompagnements sur la carte
 		 */
@@ -195,33 +198,29 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		demarrer.setPreferredSize(new Dimension(100, 40));
 		demarrer.setFont(new Font("Comforta", Font.ITALIC, 18));
 		barreDeMenu.add(demarrer);
-		// exit = new JMenuItem("Exit");
 		quitter.addActionListener(this::actionPerformed);
 		demarrer.add(quitter);
 
-		etatsDeGest.setPreferredSize(new Dimension(160, 40));
+		etatsDeGest.setPreferredSize(new Dimension(80, 40));
 		etatsDeGest.setFont(new Font("Comforta", Font.ITALIC, 18));
 		barreDeMenu.add(etatsDeGest);
+		
+		Statistiques.setPreferredSize(new Dimension(120, 40));
+		Statistiques.setFont(new Font("Comforta", Font.ITALIC, 18));
+		barreDeMenu.add(Statistiques);
 
 		JMenu afficher = new JMenu("Afficher");
 		etatsDeGest.add(afficher);
 		// afficher.addActionListener(this);
 
-//		JMenuItem commandeCourante = new JMenuItem("Commande courante");
-		afficher.add(commandeCourante);
-		// commandeCourante.addActionListener(this);
+//		JMenuItem ToutesLesComandes = new JMenuItem("Liste des commandes");
+		afficher.add(ToutesLesComandes);
+		// ToutesLesComandes.addActionListener(this);
 
-//		JMenuItem listeDesCommandes = new JMenuItem("Liste des commandes");
-		afficher.add(listeDesCommandes);
-		// listeDesCommandes.addActionListener(this);
+//		JMenuItem CommandeDuJour = new JMenuItem("Etat des encaissements");
+		afficher.add(CommandeDuJour);
+		// CommandeDuJour.addActionListener(this);
 
-//		JMenuItem etatDesEncaiss = new JMenuItem("Etat des encaissements");
-		afficher.add(etatDesEncaiss);
-		// etatDesEncaiss.addActionListener(this);
-
-//		JMenuItem statistiques = new JMenuItem("Statistiques");
-		afficher.add(statistiques);
-		// statistiques.addActionListener(this);
 
 		return barreDeMenu;
 	}
@@ -238,57 +237,62 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		labelEnteteTab = new JLabel("");
 		labelEnteteTab.setFont(new Font("Comforta", Font.BOLD, 20));
 		leftPanel.add(labelEnteteTab);
+
 		JButton tab1 = new JButton();
 		tab1.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab1.setText("Table1");
+		tab1.addActionListener(this);
 		leftPanel.add(tab1);
-		
+
 		JButton tab2 = new JButton();
 		tab2.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab2.setText("Table2");
+		tab2.addActionListener(this);
 		leftPanel.add(tab2);
-		
+
 		JButton tab3 = new JButton();
 		tab3.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab3.setText("Table3");
+		tab3.addActionListener(this);
 		leftPanel.add(tab3);
-		
+
 		JButton tab4 = new JButton();
 		tab4.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab4.setText("Table4");
+		tab4.addActionListener(this);
 		leftPanel.add(tab4);
-		
+
 		JButton tab5 = new JButton();
 		tab5.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab5.setText("Table5");
+		tab5.addActionListener(this);
 		leftPanel.add(tab5);
-		
+
 		JButton tab6 = new JButton();
 		tab6.setFont(new Font("Comforta", Font.ITALIC, 20));
 		tab6.setText("Table6");
+		tab6.addActionListener(this);
 		leftPanel.add(tab6);
 		return leftPanel;
 	}
 
 	private JPanel createRightPanel() {
-		editeurDeText = new JTextArea(80,30);
+		editeurDeText = new JTextArea(80, 30);
 		editeurDeText.getText();
 		editeurDeText.setBackground(Color.darkGray);
 		editeurDeText.setForeground(Color.WHITE);
-		editeurDeText.setFont(new Font("Comforta",Font.PLAIN,13));
-		
+		editeurDeText.setFont(new Font("Comforta", Font.PLAIN, 13));
+
 		JScrollPane scrollEdit = new JScrollPane(editeurDeText);
 		scrollEdit.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollEdit.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		
+
 		JPanel rightPanel = new JPanel(new GridLayout(1, 1));
 		rightPanel.add(scrollEdit);
-	
+
 		scrollEdit.revalidate();
 		return rightPanel;
 	}
-
-	
 
 	private JPanel createCentralPanel1() {
 		JPanel centralPanel1 = new JPanel(new GridLayout(5, 0));
@@ -301,17 +305,17 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 
 		comboBox1.setPreferredSize(new Dimension(200, 30));
 		comboBox1.setFont(new Font("comfortaa", Font.ITALIC, 32));
-		//comboBox1.setForeground();
+		// comboBox1.setForeground();
 		comboBox1.addItemListener(this);
 
 		// Labelle d'entete
 		labelEntete = new JLabel("Choisir une table et composer..", labelEntete.CENTER);
-		labelEntete.setFont(new Font("comfortaa", Font.ITALIC, 25));
+		labelEntete.setFont(new Font("comfortaa", Font.ITALIC, 20));
 		labelEntete.setForeground(Color.BLUE);
 		labelEntete.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		labelEntete2 = new JLabel("la commande en 3 étapes", labelEntete2.CENTER);
-		labelEntete2.setFont(new Font("comfortaa", Font.ITALIC, 25));
+		labelEntete2.setFont(new Font("comfortaa", Font.ITALIC, 20));
 		labelEntete2.setForeground(Color.BLUE);
 		labelEntete.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -393,20 +397,21 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JPanel createDownPanel() {
 		JPanel downPanel = new JPanel(new GridLayout(1, 3));
 		JButton ajouterMenu = new JButton("Ajouter Menu");
-		//ajouterMenu.addActionListener(e->{ new AtauCloseConfirmationMessage(this, "Menu ajouté avec succès", 3);});
+		// ajouterMenu.addActionListener(e->{ new AtauCloseConfirmationMessage(this,
+		// "Menu ajouté avec succès", 3);});
 		ajouterMenu.addActionListener(this);
-		
+
 		ajouterMenu.setPreferredSize(new Dimension(20, 40));
 		ajouterMenu.setFont(new Font("comfortaa", Font.BOLD, 20));
 		downPanel.add(ajouterMenu);
 
-		JButton enregCommand = new JButton("annuler dernier menu");
+		JButton enregCommand = new JButton("Afficher detail commande");
 		enregCommand.setPreferredSize(new Dimension(20, 40));
 		enregCommand.addActionListener(this);
 		enregCommand.setFont(new Font("comfortaa", Font.BOLD, 20));
 		downPanel.add(enregCommand);
 
-		JButton supprimCommande = new JButton("Supprimer la Commande");
+		JButton supprimCommande = new JButton("");
 		supprimCommande.setPreferredSize(new Dimension(20, 40));
 		supprimCommande.addActionListener(this);
 		supprimCommande.setFont(new Font("comfortaa", Font.BOLD, 20));
@@ -423,13 +428,28 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			exitConfirmation(source);
 		}
 
+		if (event.equals("Table1")) {
+			setNumeroDeTable(" 1");
+		}
+		if (event.equals("Table2")) {
+			setNumeroDeTable(" 2");
+		}
+		if (event.equals("Table3")) {
+			setNumeroDeTable(" 3");
+		}
+		if (event.equals("Table4")) {
+			setNumeroDeTable(" 4");
+		}
+		if (event.equals("Table5")) {
+			setNumeroDeTable(" 5");
+		}
+		if (event.equals("Table6")) {
+			setNumeroDeTable(" 6");
+		}
+		
+		//ToDo: Switcher la suite des tables
+
 		if (event.equals("Ajouter Menu")) {
-//**---------------------------------------------------------------
-			listeDesPlats = listePlats;
-
-			listeAccompagnements = listeAccomp;
-
-			listeDesDesserts = listeDess;
 
 			setPlatItemSelected(comboBox1.getSelectedItem().toString());
 			platChoisi = carte.getPlatChoisi(getPlatItemSelected());
@@ -443,25 +463,61 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			// ToDo: remplacer le numeroDeTable par le item selected des tables avec une
 			// méthode qui switch en fonction de la table choisie
 
-			laCommande.setNumTab(numeroDeTable);
-			menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
-			laCommande.addMenu(menu);
+			if (JOptionPane.showConfirmDialog(null,
+					"Numéro de la table choisie: " + getNumeroDeTable() + "\nPlat choisi: "
+							+ comboBox1.getSelectedItem().toString().toUpperCase() + "\nAccompagnement chosi: "
+							+ comboBox2.getSelectedItem().toString().toUpperCase() + "\nDessert choisi: "
+							+ comboBox3.getSelectedItem().toString().toUpperCase()
+							+ "\n\nCliquez sur:\n'Yes' pour confirmer\n'No' pour modifier",
+					"Avant l'ajout, confirmez vos choix ci-dessous",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
+				if (getNumeroDeTable() == null) {
+					timer.setRepeats(false);
+					timer.start();
+					optionPane.createDialog(null, "Veuillez choisir une table").setVisible(true);
 
-			setPlatItemSelected(null);
-			setAccompItemSelected(null);
-			setDessItemSelected(null);
+				} else {
+					
+					laCommande.setNumTab(getNumeroDeTable());
 
-			affichage = laCommande.displayCommand();
-			editeurDeText.setText(affichage);
-			new AtauCloseConfirmationMessage(this, "Menu ajouté avec succès", 3);
+					menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
+					laCommande.addMenu(menu);
+					
+					ArrayList<Iplat> commandeSelected = laCommande.selectCommande(getNumeroDeTable());
+					laCommande.addCommande(getNumeroDeTable(), commandeSelected);
+					//laCommande.setNumTab(event);
+					
+					//ToDo: Juste pour le test du mapping des commandes
+					System.out.println("Nous avons : "+laCommande.getListeDesCommandes().size()+" commande(s)");
+					
+					timer.setRepeats(false);
+					timer.start();
+					optionPane.createDialog(null, "Menu ajouté avec succès").setVisible(true);
 
+					setPlatItemSelected(null);
+					setAccompItemSelected(null);
+					setDessItemSelected(null);
+				}
+			}
+			
+			
 		}
-//ToDo: a revoir si nécessaire
-		//if(event.equals("annuler dernier menu")) {
-//			laCommande.removeLastMenu();
-//			editeurDeText.setText(affichage);
-//		}
+
+		if (event.equals("Afficher detail commande")) {
+			
+			// ici il faudrait voir comment faire une méthode qui affiche les détails en fonction d'un sous-menu item
+			// commande table1, commande table2 etc...
+			if (laCommande.getPrixTotal() == 0) {
+				timer.setRepeats(false);
+				timer.start();
+				optionPane.createDialog(null, "Ajouter un menu à la commande!").setVisible(true);
+			} else {
+				
+				affichage = laCommande.displayCommand();
+				editeurDeText.setText(affichage);
+			}
+		}
 
 	}
 
@@ -475,6 +531,9 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(ABORT);
+
 	}
+	
+	
 
 }
