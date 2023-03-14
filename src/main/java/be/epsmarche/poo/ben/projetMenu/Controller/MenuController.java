@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Carte;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Choix;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Loader;
-import be.epsmarche.poo.ben.projetMenu.Model.Commandes.CollectionMenus;
+
 import be.epsmarche.poo.ben.projetMenu.Model.Patterns.AccompagnementFactory;
 import be.epsmarche.poo.ben.projetMenu.Model.Patterns.DessertFactory;
 import be.epsmarche.poo.ben.projetMenu.Model.Patterns.PlatDecorator;
@@ -24,6 +24,10 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 import be.epsmarche.poo.ben.projetMenu.View.ViewAccueil;
 import be.epsmarche.poo.ben.projetMenu.View.ViewCreerCommandeForm;
 
+/**
+ * Controleur: Classe permettant servant d'intermédiaire entre le modèle et la vue
+ * @since V4
+ */
 public class MenuController {
 
 	// Attributs du controleur
@@ -37,7 +41,7 @@ public class MenuController {
 //	private ViewTable afficheTable;
 //	private ViewAjoutFormulaire formulaireAjout;
 //	private ViewModifFormulaire modifFormulaire;
-	public CollectionMenus Cd1 = new CollectionMenus("Table1");
+	
 	private static Carte carte = new Carte();
 	private static PlatFactory fabricPlat = new PlatFactory();
 	private Choix platChoisi, accompChoisi, dessertChoisi;
@@ -92,57 +96,6 @@ public class MenuController {
 		private static final MenuController INSTANCE = new MenuController();
 	}
 
-	/**
-	 * getMenuSelected intervient dans l'action perform. Elle prend en paramètre le
-	 * plat, l'accompagnement et le dessert choisis via le formulaire,
-	 * 
-	 * @param plat
-	 * @param accomp
-	 * @param dess
-	 * @return
-	 */
-
-//	menu1 = new PlatFactory().getPlat("viande", "Steak de 200g de crocodile", 10.);
-//	menu1 = new Riz(menu1, "risotto aux champignons", 7.5);
-//	menu1 = new Fruit(menu1, "Salade de fruits tropicaux", 2.5);
-//	
-	// TODO : Revoir comment changer le nom en displayChoixDeMenu()
-	// au lieu de displayModel
-	// TODO: compléter la méthode
-//	public void displayModel() {
-//		this.collection = new ArrayList<>(myCollection.getListeMenu());
-//	}
-
-	/**
-	 * La méthode loadCollection permet de charger la collection de menu. Elle
-	 * serialise ladite collection via le fichier de données binaires menus.ser crée
-	 * par le programme
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-//	private void loadCollection() throws FileNotFoundException, IOException, ClassNotFoundException {
-//		FileInputStream fichier = new FileInputStream("menus.ser");
-//
-//		try (ObjectInputStream entree = new ObjectInputStream(fichier)) {
-//			this.myCollection = (CollectionMenus) entree.readObject();
-//		}
-//	}
-
-	/**
-	 * Sauvegarde des menus dans la collection
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-//	private void saveCollection() throws FileNotFoundException, IOException {
-//		try (ObjectOutputStream sortie = new ObjectOutputStream(new FileOutputStream("menus.ser"))) {
-//			sortie.writeObject(this.myCollection);
-//		}
-//	}
-
-	// ToDo à develpper
 	public void modifMenu(Choix menuAmodifier) throws Exception {
 
 	}
@@ -151,12 +104,9 @@ public class MenuController {
 
 	}
 
-//	public void saveCollection()throws FileNotFoundException, IOException{
-//		
-//	}
 
 	/**
-	 * 
+	 * Affichage d'un plat du menu
 	 * @param plat
 	 * @return
 	 */
@@ -167,13 +117,19 @@ public class MenuController {
 	public static Double subTotal(Iplat menu) {
 		return menu.getPrix();
 	}
+	
+	/**
+	 * methode permettant l'instanciation de la classe Loader
+	 * @param l
+	 * @return
+	 */
 
 	public static Loader getLoadObject(Loader l) {
 		try {
 
 			l = loadDataBase();
 		} catch (ParserConfigurationException | SAXException | IOException e1) {
-			// TODO Auto-generated catch block
+		
 			e1.printStackTrace();
 		}
 		return l;

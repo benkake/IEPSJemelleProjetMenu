@@ -2,34 +2,39 @@ package be.epsmarche.poo.ben.projetMenu.Model.Plat;
 
 /**
  * Classe definissant un plat à base de viande
+ * 
  * @author ben
  */
 public class Viande implements Iplat {
 	/**
-	 *@param Prix du plat
+	 * @Prix du plat
 	 */
 	protected Double prix;
 	/**
-	 *@param Type de plat
+	 * Type de plat
 	 */
 	protected String type;
-	
+
+	/**
+	 * Catégorie de plat
+	 */
+	protected String categorie;
+
 	/**
 	 * Constructeurs de nouvels objets plat à base de Viande
 	 */
-	
 	public Viande() {
 		super();
 	}
 
 	/**
-	 * @param type de viande
+	 * type de viande
 	 */
 	public Viande(String type) {
 		super();
 		this.type = getType();
 	}
-	
+
 	/**
 	 * @param type
 	 * @param prix de la viande
@@ -39,7 +44,7 @@ public class Viande implements Iplat {
 		this.type = type;
 		this.prix = prix;
 	}
-	
+
 	/*
 	 * getters et setters
 	 */
@@ -48,7 +53,6 @@ public class Viande implements Iplat {
 		this.type = type;
 	}
 
-	
 	@Override
 	public String getType() {
 		return this.type;
@@ -70,13 +74,12 @@ public class Viande implements Iplat {
 	public String getPeparation() {
 		return getType() + " mariné au piment africain";
 	}
-	
+
 	/**
-	 * @return au format lisible la méthode getPreparation()
+	 * @return au format String la méthode getPreparation()
 	 */
 	@Override
 	public String toString() {
 		return getPeparation();
 	}
-
 }

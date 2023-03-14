@@ -1,52 +1,58 @@
 package be.epsmarche.poo.ben.projetMenu.Model.Accompagnements;
 
+import be.epsmarche.poo.ben.projetMenu.Model.Patterns.PlatDecorator;
 import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
-import be.epsmarche.poo.ben.projetMenu.Patterns.PlatDecorator;
 
 /**
- * Classe définissant un accompagnement à base de type Frites
+ * Classe définissant un accompagnement à base de Frites
+ * 
  * @author ben
  */
 public class Frites extends PlatDecorator {
-	
+
 	/**
-	 *@param Prix de l'accompagnement à base  de frites
+	 * Prix de l'accompagnement à base de frites
 	 */
 	protected Double prixFrites;
-	
+
 	/**
-	 *@paramType d'accompagnement à base de frites
+	 * Type d'accompagnement à base de frites
 	 */
 	protected String typeFrites;
-	
+	/**
+	 * Catégorie Accompagnement
+	 */
+	protected String categorie;
 
 	/**
 	 * Constructeur à 1 paramètre
+	 * 
 	 * @param platDecore
 	 */
 	public Frites(Iplat platDecore) {
 		super(platDecore);
 		this.platDecore = platDecore;
 	}
-	
+
 	/**
-	 * Constructeur à 2 paramètres
+	 * Constructeur à 3 paramètres
+	 * 
 	 * @param menu
 	 * @param typeFrites
 	 * @param prixFrites
 	 */
-	public Frites(Iplat menu, String typeFrites,Double prixFrites ) {
+	public Frites(Iplat menu, String typeFrites, Double prixFrites) {
 		super(menu);
 		this.typeFrites = typeFrites;
 		this.prixFrites = prixFrites;
 	};
-	
+
 	/**
-	 *@return un plat avec un accompagnement à base de Frites
+	 * @return un plat avec un accompagnement à base de Frites
 	 */
 	@Override
-	public String getPeparation() {           
-		return platDecore.getPeparation() +" \n >Accompagnement: "+ this.getType();
+	public String getPeparation() {
+		return platDecore.getPeparation() + " \n >Accompagnement: " + this.getType();
 	}
 
 	@Override
@@ -63,18 +69,26 @@ public class Frites extends PlatDecorator {
 	}
 
 	@Override
-	public void setType(String type) {  
+	public void setType(String type) {
 		this.typeFrites = type;
 	}
 
 	@Override
-	public String getType() { 
+	public String getType() {
 		return typeFrites;
 	}
-	
+
+	public String getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(String categorie) {
+		this.categorie = categorie;
+	}
+
 	/**
-	 *@return sous la forme lisible, 
-	 *un plat avec un accompagnement à base de Frites + la somme des prix du plat et de cet accompagnement
+	 * @return sous de String, un plat avec un accompagnement à base de Frites + la
+	 *         somme des prix du plat et de cet accompagnement
 	 */
 	@Override
 	public String toString() {
