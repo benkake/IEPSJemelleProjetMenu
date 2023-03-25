@@ -2,17 +2,17 @@ package be.epsmarche.poo.ben.projetMenu.Model.Plat;
 
 /**
  * Interface définissant le plat
- * 
+ *
  * @author ben
  */
 public interface Iplat {
-	public String getPeparation();
+    String getPeparation();
 
-	public void setPrix(Double prix);
+    Double getPrix();
 
-	public Double getPrix();
+    void setPrix(Double prix);
 
-	public void setType(String type);
+    String getType();
 
-	public String getType();
+    void setType(String type);
 }

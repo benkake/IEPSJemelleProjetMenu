@@ -1,14 +1,17 @@
 package be.epsmarche.poo.ben.projetMenu.Model.DBconnection;
 
-import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.epsmarche.poo.ben.projetMenu.Controller.MenuController;
 import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
+import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 
 /**
  * Classe permettant d'accéder à la BD pour obtenir des objets de type commande
@@ -17,13 +20,13 @@ import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
  * @since V4
  *
  */
-public class CommandesDAO implements Serializable{
+public class CommandesDAO  {
 
+	MenuController contr = new MenuController();
 	/**
-	 * 
+	 * constructeur
 	 */
 	public CommandesDAO() {
-		
 	}
 	//ToDo toutes ces méthodes doivent être appellees d'abord par le controleur qui les passera à la vue
 	public List getAllCommandes() {
@@ -45,12 +48,12 @@ public class CommandesDAO implements Serializable{
 			// qui permet de lire une ligne de la table des données
 			res = pStmt.executeQuery();
 			
-			// parcours de toute la table afin de lire toutes les lignes
+			// parcours toute la table afin de lire toutes les lignes
 			while(res.next()) { // fonctionne comme un itérateur
 				Commande commande = new Commande();
 				commande.setIdCommande(res.getInt("id"));
 				commande.setNumTab(res.getString("numtable"));
-				commande.setMenus(res.getString("menus"));;
+				commande.setMenus(res.getString("menus"));
 				commande.setPrixTotal(res.getDouble("prix"));
 				commande.setDateCommande(res.getDate("dateCommande"));
 				commande.setPayee(res.getBoolean("payee"));
@@ -220,40 +223,49 @@ public class CommandesDAO implements Serializable{
 	}
 	
 	/**
-	 * Permet d'ajouter dans la BD les commandes préalablement crées ==> listeMenu avec Numéro de table dans notre cas 
-	 * @param commande
+	 * Permet d'ajouter dans la BD les commandes préalablement crées ==> listeMenu avec Numéro de table dans notre cas
 	 * @return
 	 */
-	public boolean addCommande(Commande commande) {  
-		
-		java.sql.Connection con = null;
+	public boolean addCommande(Map<String, ArrayList<Iplat>> listeDesCommandes) throws SQLException {  // passer en paramètre un objet commande
+
+	 	Connection con = null;
 		java.sql.PreparedStatement pStmt = null;
-		
 		try {
-			
-			// Crétion d'un état de connexion et stockage dans la variable con
-			con = ConnectDAO.getInstance().connection();
-			
+			// Création d'un état de connexion et stockage dans la variable con
+	 		con = (Connection) ConnectDAO.getInstance().connection();
 			// desactivation de la validation automatique des transaction par le pilote JDBC
-			con.setAutoCommit(false); // methode de la clsse Connection 
+			con.setAutoCommit(false); // methode de la clsse Connection
 			// Préparation d'une requête d'insertion
-			String query = "insert into commandes(numtable, menus, prix, dateCommande, payee) values(?,?,?,now(),0)" ;
+
+			String query = "INSERT INTO commandes(numtable, menus, prix) values(?,?,?)";
 			// Stockage de la requête préparée dans l'etat de connexion
 			pStmt = con.prepareStatement(query);
-			pStmt.setString(1, commande.getNumTab());  // Voir si numTab ne prend pas le numéro de table selectionné
-			pStmt.setString(2, commande.getMenus()); // attention voir si menu ne prends pas la listeMenu réadaptée pour les besoins d'affichage
-			pStmt.setDouble(3, commande.getPrixTotal()); // voir si prix total  stocke la méthode get prix total
-			pStmt.setBoolean(5,false );
-			// mettre à jour le tableau
+			for(Map.Entry <String, ArrayList<Iplat>> commandes: listeDesCommandes.entrySet()){
+				String numTable = commandes.getKey();
+				ArrayList<Iplat> uneCommande = commandes.getValue();
+
+				pStmt.setString(1,numTable);
+				System.out.println(" Numero de table = "+numTable);
+
+				Double prixTotal= 0.;
+				for(Iplat menus : uneCommande  ){
+					pStmt.setString(2,menus.toString()); // attention voir si menu ne prends pas la listeMenu réadaptée pour les besoins d'affichage
+					System.out.println(" commande =\n "+ menus.toString());
+					prixTotal += menus.getPrix();
+					System.out.println("=== prix du menu = "+ menus.getPrix());
+					pStmt.setDouble(3,prixTotal ); // voir si prix total  stocke la méthode get prix total
+					System.out.println("=== prix total du menu = "+ prixTotal);
+				}
+
+			}
 			pStmt.executeUpdate();
 			// valider les modification effectuées dans la table
 			con.commit();
-			
 			return true;
-			
+
 		} catch (SQLException ex) {
 			Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE,null,ex);
-			
+
 			if(con != null) { // si la connexion echoue
 				try {
 					  	con.rollback(); // annule la modification
@@ -262,9 +274,9 @@ public class CommandesDAO implements Serializable{
 				}
 			}
 			return false;
-			
+
 		}finally{
-			
+
 			if(con != null) { // si la connexion réussie
 				try {
 					con.setAutoCommit(true); // active la valisation automatique
@@ -280,47 +292,54 @@ public class CommandesDAO implements Serializable{
 					Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE,null,ex);
 				}
 			}
-				
+
 		}
-		
+
 	}
-	
+
+
 	// ToDo: Refelexion: Pour ne pas avoir plusieurs commandes pour une même table en journée
 	// on peut à chaque fois que un numéro de table existe dans la BD, update plutôt cette 
 	// ligne avec les données correspondantes et non insérer.
 	
-public boolean updateCommande(Commande commande) {
+public boolean updateCommande(String numTb,  Map<String, ArrayList<Iplat>> listeDesCommandes)throws SQLException {
 		
 		java.sql.Connection con = null;
 		java.sql.PreparedStatement pStmt = null;
-		
-		try {
-			
-			// Crétion d'un état de connexion et stockage dans la variable con
-			con = ConnectDAO.getInstance().connection();
-			
-			// desactivation de la validation automatique des transaction par le pilote JDBC
-			con.setAutoCommit(false); // methode de la clsse Connection
-			// Préparation d'une requête de mise à jour
-			String query = "update commandes"
-							+"set numtable = ?,"
-							+"menus = ?,"
-							+"prix = ?,"
-							+"payee = ?,"
-							+"where id =?,";
-					
-			// Stockage de la requête préparée dans l'etat de connexion
-			pStmt = con.prepareStatement(query);
-			pStmt.setString(1, commande.getNumTab());  // Voir si numTab ne prend pas le numéro de table selectionné
-			pStmt.setString(2, commande.getMenus()); // attention voir si menu ne prends pas la listeMenu réadaptée pour les besoins d'affichage
-			pStmt.setDouble(3, commande.getPrixTotal()); // voir si prix total  stocke la méthode get prix total
-			pStmt.setBoolean(5,false );
-			// mettre à jour le tableau
+
+	try {
+		// Création d'un état de connexion et stockage dans la variable con
+		con = (Connection) ConnectDAO.getInstance().connection();
+		// desactivation de la validation automatique des transaction par le pilote JDBC
+		con.setAutoCommit(false); // methode de la clsse Connection
+		// Préparation d'une requête de mise à jour
+		String query = "UPDATE commandes SET menus = ?, prix = ? WHERE numtable = ? AND CAST(dateCommande AS DATE)= DATE(now()) ";
+
+		// Stockage de la requête préparée dans l'etat de connexion
+		pStmt = con.prepareStatement(query);
+		String numTable = null;
+		for(Map.Entry <String, ArrayList<Iplat>> commandes: listeDesCommandes.entrySet()){
+			 numTable = commandes.getKey();
+			ArrayList<Iplat> uneCommande = commandes.getValue();
+			Double prixTotal= 0.;
+			String  menusConcat = "";
+
+			for(Iplat menus : uneCommande  ){
+				menusConcat += menus.toString();
+				prixTotal += menus.getPrix();
+
+			}
+			// Fournir les valeurs à la requête préparée
+			pStmt.setString(1,menusConcat); // attention voir si menu ne prends pas la listeMenu réadaptée pour les besoins d'affichage
+			System.out.println("------------Commande mise à jour =\n "+ menusConcat); // Todo : effacer
+			pStmt.setDouble(2,prixTotal ); // voir si prix total  stocke la méthode get prix total
+			System.out.println("=== prix total mis à jour = "+ prixTotal); // Todo : effacer
+			pStmt.setString(3,numTable);
 			pStmt.executeUpdate();
-			// valider les modification effectuées dans la table
-			con.commit();
-			
-			return true;
+		}
+		// valider les modification effectuées dans la table
+		con.commit();
+		return true;
 			
 		} catch (SQLException ex) {
 			Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE,null,ex);

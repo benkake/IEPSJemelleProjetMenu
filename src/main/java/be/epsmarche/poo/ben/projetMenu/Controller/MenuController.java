@@ -2,27 +2,29 @@ package be.epsmarche.poo.ben.projetMenu.Controller;
 
 import java.awt.EventQueue;
 import java.beans.PropertyChangeSupport;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.xml.parsers.ParserConfigurationException;
 
+import be.epsmarche.poo.ben.projetMenu.Model.DBconnection.CommandesDAO;
+import be.epsmarche.poo.ben.projetMenu.Model.DBconnection.ConnectDAO;
 import org.xml.sax.SAXException;
 
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Carte;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Choix;
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Loader;
 
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.AccompagnementFactory;
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.DessertFactory;
-import be.epsmarche.poo.ben.projetMenu.Model.Patterns.PlatDecorator;
 import be.epsmarche.poo.ben.projetMenu.Model.Patterns.PlatFactory;
 import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 import be.epsmarche.poo.ben.projetMenu.View.ViewAccueil;
-import be.epsmarche.poo.ben.projetMenu.View.ViewCreerCommandeForm;
+import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
 
 /**
  * Controleur: Classe permettant servant d'intermédiaire entre le modèle et la vue
@@ -32,8 +34,8 @@ public class MenuController {
 
 	// Attributs du controleur
 	private static ViewAccueil accueil;
-	private static ViewCreerCommandeForm commander;
-
+	private static CommandesDAO comDAO;
+	private static ConnectDAO DAOcon;
 	/**
 	 * Attribut de chargement
 	 */
@@ -86,6 +88,9 @@ public class MenuController {
 		return load;
 	}
 
+
+
+
 	/**
 	 * Classe interne ControllerHolder permet de créer un singleton du controleur
 	 * MenuConroller. Ce singleton es appelé INSTANCE
@@ -96,13 +101,9 @@ public class MenuController {
 		private static final MenuController INSTANCE = new MenuController();
 	}
 
-	public void modifMenu(Choix menuAmodifier) throws Exception {
 
-	}
 
-	public void supprimeMenu(Choix menuAsupprimer) throws Exception {
 
-	}
 
 
 	/**
@@ -123,7 +124,6 @@ public class MenuController {
 	 * @param l
 	 * @return
 	 */
-
 	public static Loader getLoadObject(Loader l) {
 		try {
 
@@ -134,4 +134,27 @@ public class MenuController {
 		}
 		return l;
 	}
+	public boolean callUpdateCommande( String numt, Map<String, ArrayList<Iplat>> listeDesCommandes)throws SQLException {
+		comDAO = new CommandesDAO();
+		return comDAO.updateCommande(numt,listeDesCommandes);
+	}
+
+	public boolean callAddCommande(Map<String, ArrayList<Iplat>> listeDesCommandes) throws SQLException {
+		comDAO = new CommandesDAO();
+		return comDAO.addCommande(listeDesCommandes);
+	}
+	public ArrayList callGetAllCammandes(){
+		return (ArrayList) comDAO.getAllCommandes();
+	}
+
+	public String callCommandeForDB(){
+		Commande com = new Commande();
+		return com.displayCommandForDB();
+	}
+//	public PreparedStatement callPreparedStatement(){
+//
+//		return DA
+//	}
+
+
 }

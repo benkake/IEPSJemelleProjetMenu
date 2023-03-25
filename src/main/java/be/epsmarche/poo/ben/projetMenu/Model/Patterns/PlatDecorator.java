@@ -4,17 +4,16 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 
 /**
  * Classe permettant d'ajouter un décorateur à un plat.
- * 
- * @author ben
  *
+ * @author ben
  */
 public abstract class PlatDecorator implements Iplat {
 
-	protected Iplat platDecore;
+    protected Iplat platDecore;
 
-	public PlatDecorator(Iplat platDecore) {
-		super();
-		this.platDecore = platDecore;
-	}
+    public PlatDecorator(Iplat platDecore) {
+        super();
+        this.platDecore = platDecore;
+    }
 
 }
