@@ -1,106 +1,106 @@
 <?xml version ="1.0" encoding ="UTF-8"?>
 
 <!-- root menus (contient le contenu des choix dont chacun combine: 1 plats +1 accompagnements +1 desserts)  -->
-<menus> 
-		<!-- child "plats" (contient la liste des plats)-->
-		<plats> 
-				<!-- plats à base de viande  -->
-				<categorie id = "viande">
-						<plat id ="steakViande">
-								<type>Steak de 150g de mouton</type>
-								<prix>18.5</prix>
-						</plat>
-				</categorie>
-				
-				<!-- plats à base de poisson -->
-				<categorie id = "poisson">
-						<plat id ="steakPoisson">
-								<type>Steak de 240g de requin</type>
-								<prix>30.5</prix>
-						</plat>
-				</categorie>
-				
-				<!-- plats à base de volaille -->
-				<categorie id = "volaille">
-						<plat id ="steakVolaille">
-								<type>Steak de 240g de dinde</type>
-								<prix>30.5</prix>
-						</plat>
-				</categorie>
-				
-		</plats>
-		
-		<!-- child "accompagnements" (contient la liste des accompagnements)-->
-		<accompagnements>
-				<!-- accompagnement à base de frites  -->
-				<categorie id = "frites">
-						<accompagnement id ="manioc">
-								<type>frites de manioc</type>
-								<prix>3.5</prix>
-						</accompagnement>
-				</categorie>
-				
-				<!-- accompagnement à base de pates -->
-				<categorie id = "pates">
-						<accompagnement id ="macaroni">
-								<type>Macaroni de Sicile</type>
-								<prix>6.5</prix>
-						</accompagnement>
-				</categorie>
-				
-				<!-- pommes de terre -->
-				<categorie id = "pommeDT">
-						<accompagnement id ="croquettes">
-								<type>Croquettes de pommes de terre au saumon fumé</type>
-								<prix>4.5</prix>
-						</accompagnement>
-				</categorie>
-				
-				<!-- riz -->
-				<categorie id = "riz"> 
-						<accompagnement id ="risotto">
-								<type>risotto aux champignons</type>
-								<prix>7.5</prix>
-						</accompagnement>
-				</categorie>
-				
-		</accompagnements>
-	
-		<!-- child "desserts" (contient la liste des desserts)-->
-		<desserts>
-				
-				<!-- dessert à base de fruit -->
-				<categorie id = "fruit">
-						<dessert id ="multifruit">
-								<type>Salade de fruits tropicaux</type>
-								<prix>2.5</prix>
-						</dessert>
-				</categorie>
-				
-				<!-- dessert à base de patisserie -->
-				<categorie id = "patisserie">
-						<dessert id ="crepe">
-								<type>Crêpe à la crème au chocolat</type>
-								<prix>5.0</prix>
-						</dessert>
-				</categorie>
-				
-				<!-- dessert à base de glace -->
-				<categorie id = "glace">
-						<dessert id ="milkshake">
-								<type>Milkshake à la vanille</type>
-								<prix>2.0</prix>
-						</dessert>
-				</categorie>
-				
-				<!-- dessert à base de pousse-café -->
-				<categorie id = "pousseCafe"> 
-						<dessert id ="cognac">
-								<type>Cognac de Bourgogne</type>
-								<prix>5.0</prix>
-						</dessert>
-				</categorie>
-				
-		</desserts>
-	
+<menus>
+    <!-- child "plats" (contient la liste des plats)-->
+    <plats>
+        <!-- plats à base de viande  -->
+        <categorie id="viande">
+            <plat id="steakViande">
+                <type>Steak de 150g de mouton</type>
+                <prix>18.5</prix>
+            </plat>
+        </categorie>
+
+        <!-- plats à base de poisson -->
+        <categorie id="poisson">
+            <plat id="steakPoisson">
+                <type>Steak de 240g de requin</type>
+                <prix>30.5</prix>
+            </plat>
+        </categorie>
+
+        <!-- plats à base de volaille -->
+        <categorie id="volaille">
+            <plat id="steakVolaille">
+                <type>Steak de 240g de dinde</type>
+                <prix>30.5</prix>
+            </plat>
+        </categorie>
+
+    </plats>
+
+    <!-- child "accompagnements" (contient la liste des accompagnements)-->
+    <accompagnements>
+        <!-- accompagnement à base de frites  -->
+        <categorie id="frites">
+            <accompagnement id="manioc">
+                <type>frites de manioc</type>
+                <prix>3.5</prix>
+            </accompagnement>
+        </categorie>
+
+        <!-- accompagnement à base de pates -->
+        <categorie id="pates">
+            <accompagnement id="macaroni">
+                <type>Macaroni de Sicile</type>
+                <prix>6.5</prix>
+            </accompagnement>
+        </categorie>
+
+        <!-- pommes de terre -->
+        <categorie id="pommeDT">
+            <accompagnement id="croquettes">
+                <type>Croquettes de pommes de terre au saumon fumé</type>
+                <prix>4.5</prix>
+            </accompagnement>
+        </categorie>
+
+        <!-- riz -->
+        <categorie id="riz">
+            <accompagnement id="risotto">
+                <type>risotto aux champignons</type>
+                <prix>7.5</prix>
+            </accompagnement>
+        </categorie>
+
+    </accompagnements>
+
+    <!-- child "desserts" (contient la liste des desserts)-->
+    <desserts>
+
+        <!-- dessert à base de fruit -->
+        <categorie id="fruit">
+            <dessert id="multifruit">
+                <type>Salade de fruits tropicaux</type>
+                <prix>2.5</prix>
+            </dessert>
+        </categorie>
+
+        <!-- dessert à base de patisserie -->
+        <categorie id="patisserie">
+            <dessert id="crepe">
+                <type>Crêpe à la crème au chocolat</type>
+                <prix>5.0</prix>
+            </dessert>
+        </categorie>
+
+        <!-- dessert à base de glace -->
+        <categorie id="glace">
+            <dessert id="milkshake">
+                <type>Milkshake à la vanille</type>
+                <prix>2.0</prix>
+            </dessert>
+        </categorie>
+
+        <!-- dessert à base de pousse-café -->
+        <categorie id="pousseCafe">
+            <dessert id="cognac">
+                <type>Cognac de Bourgogne</type>
+                <prix>5.0</prix>
+            </dessert>
+        </categorie>
+
+    </desserts>
+
 </menus>

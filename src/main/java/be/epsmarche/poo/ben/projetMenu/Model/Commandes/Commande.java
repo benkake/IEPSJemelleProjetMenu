@@ -18,18 +18,6 @@ import java.util.Objects;
  * @author ben
  */
 public class Commande {
-    
-	private Integer idCommande;
-    private String numTab;
-    private String menus;
-    private Double prixTotal;
-    private Date dateCommande;
-    private Boolean payee;
-
-    /**
-     * listeMenu: la liste de menus correspondant à une commande quelconque
-     */
-    private ArrayList<Iplat> listeMenu = new ArrayList<>();
 
     /**
      * Liste des menus par table.
@@ -41,9 +29,18 @@ public class Commande {
     private final ArrayList<Iplat> listeMenu4 = new ArrayList<>(); //commande table 4
     private final ArrayList<Iplat> listeMenu5 = new ArrayList<>(); //commande table 5
     private final ArrayList<Iplat> listeMenu6 = new ArrayList<>(); //commande table 6
-
     private final Map<String, ArrayList<Iplat>> listeDesCommandes = new HashMap<>();
-
+    public ArrayList dataForTable = new ArrayList<>();
+    private Integer idCommande;
+    private String numTab;
+    private String menus;
+    private Double prixTotalFromDB;
+    private Date dateCommande;
+    private Boolean payee;
+    /**
+     * listeMenu: la liste de menus correspondant à une commande quelconque
+     */
+    private ArrayList<Iplat> listeMenu = new ArrayList<>();
 
     /**
      * Constructeur par défaut
@@ -51,6 +48,7 @@ public class Commande {
     public Commande() {
         super();
     }
+
 
     /**
      * Constructeur à 1 param
@@ -73,74 +71,72 @@ public class Commande {
         lesTables.add(" 6");
     }
 
-    
-  
-
     /**
      * Constructeur destiné à la table
-	 * @param idCommande
-	 * @param numTab
-	 * @param menus
-	 * @param prixTotal
-	 * @param dateCommande
-	 * @param payee
-	 */
-	public Commande(Integer idCommande,String numTab, String menus, Double prixTotal, Date dateCommande, Boolean payee) {
-		super();
-		this.idCommande = idCommande;
-		this.numTab = numTab;
-		this.menus = menus;
-		this.prixTotal = prixTotal;
-		this.dateCommande = dateCommande;
-		this.payee = payee;
-	}
+     *
+     * @param idCommande
+     * @param numTab
+     * @param menus
+     * @param prixTotalFromDB
+     * @param dateCommande
+     * @param payee
+     */
+    public Commande(Integer idCommande, String numTab, String menus, Double prixTotalFromDB, Date dateCommande, Boolean payee) {
+        super();
+        this.idCommande = idCommande;
+        this.numTab = numTab;
+        this.menus = menus;
+        this.prixTotalFromDB = prixTotalFromDB;
+        this.dateCommande = dateCommande;
+        this.payee = payee;
+    }
 
-	public String getNumTab() {
+    public String getNumTab() {
         return this.numTab;
     }
 
     public void setNumTab(String tabNum) {
         this.numTab = tabNum;
     }
-    
+
     public Integer getIdCommande() {
-		return idCommande;
-	}
+        return idCommande;
+    }
 
-	public void setIdCommande(Integer id) {
-		this.idCommande = id;
-	}
+    public void setIdCommande(Integer id) {
+        this.idCommande = id;
+    }
 
-	public String getMenus() {
-		return menus;
-	}
+    public String getMenus() {
+        return menus;
+    }
 
-	public void setMenus(String menus) {
-		this.menus = menus;
-	}
+    public void setMenus(String menus) {
+        this.menus = menus;
+    }
 
-	public Date getDateCommande() {
-		return dateCommande;
-	}
+    public Date getDateCommande() {
+        return dateCommande;
+    }
 
-	public void setDateCommande(Date dateCommande) {
-		this.dateCommande = dateCommande;
-	}
+    public void setDateCommande(Date dateCommande) {
+        this.dateCommande = dateCommande;
+    }
 
-	public Boolean getPayee() {
-		return payee;
-	}
+    public Boolean getPayee() {
+        return payee;
+    }
 
-	public void setPayee(Boolean payee) {
-		this.payee = payee;
-	}
+    public void setPayee(Boolean payee) {
+        this.payee = payee;
+    }
 
-	public void setPrixTotal(Double prixTotal) {
-		this.prixTotal = prixTotal;
-	}
+    public Double getPrixTotalFromDB() {
+        return prixTotalFromDB;
+    }
 
-	public void setListeMenu(ArrayList<Iplat> listeMenu) {
-        this.listeMenu = listeMenu;
+    public void setPrixTotalFromDB(Double prixTotalFromDB) {
+        this.prixTotalFromDB = prixTotalFromDB;
     }
 
     public ArrayList<Iplat> getListeMenu() {
@@ -159,8 +155,9 @@ public class Commande {
         return listeMenu;
     }
 
-    public ArrayList dataForTable = new ArrayList<>();
-
+    public void setListeMenu(ArrayList<Iplat> listeMenu) {
+        this.listeMenu = listeMenu;
+    }
 
     public Map<String, ArrayList<Iplat>> getListeDesCommandes() {
         return listeDesCommandes;
@@ -171,14 +168,13 @@ public class Commande {
     }
 
     public void addMenu(Iplat menu, String tabNum) {
-        if (tabNum.equals(" 1")) {
+        if (tabNum.equals(" 1"))
             listeMenu1.add(menu);
-        }
         if (tabNum.equals(" 2"))
             listeMenu2.add(menu);
         if (tabNum.equals(" 3"))
             listeMenu3.add(menu);
-		if (tabNum.equals(" 4"))
+        if (tabNum.equals(" 4"))
             listeMenu4.add(menu);
         if (tabNum.equals(" 5"))
             listeMenu5.add(menu);
@@ -193,13 +189,14 @@ public class Commande {
         getListeMenu().add(menu);
     }
 
-    public String displayCommandForDB(){
-       String commandMenus = null;
+    public String displayCommandForDB() {
+        String commandMenus = null;
         for (int i = 0; i < getListeMenu().size(); ++i) {
             commandMenus += getListeMenu().get(i);
         }
         return commandMenus;
     }
+
     /**
      * @return l'ensemble de la commande sous forme de chaîne de caractères
      */
@@ -225,6 +222,9 @@ public class Commande {
         return prixTot;
     }
 
+
+
+
     /**
      * Methode permettant de créer un objet menu constitué de 3 éléments(plat,
      * accompagnement et dessert)
@@ -248,30 +248,23 @@ public class Commande {
         return menuConcocted;
     }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.idCommande);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.idCommande);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Commande other = (Commande) obj;
-		return Objects.equals(this.idCommande, other.idCommande);
-	}
-    
-    
-    
-    
-
-    
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Commande other = (Commande) obj;
+        return Objects.equals(this.idCommande, other.idCommande);
+    }
 }

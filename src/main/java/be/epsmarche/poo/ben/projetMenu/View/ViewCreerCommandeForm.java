@@ -33,7 +33,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
     //***---------------------------------------------------------
     private static Loader loadedObjects;
     private final Carte carte;
-    private static MenuController contr;
+    private static MenuController contr = new MenuController();
 
     private ViewTable table;
     //***-------------------------------------------
@@ -457,7 +457,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                     optionPane.createDialog(null, "Veuillez choisir une table").setVisible(true);
 
                 } else {
-                   menuSizeBefAdd = laCommande.getListeMenu().size();
+                    menuSizeBefAdd = laCommande.getListeMenu().size();
 
                     Iplat menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
                     laCommande.addMenu(menu, this.getNumeroDeTable());
@@ -467,13 +467,13 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 
 
                     //ToDo: A effacer: Juste pour le test du mapping des commandes
-                    System.out.println(" Nombre commandes avant l'ajout: "+commandSiseBefAdd);
+                    System.out.println(" Nombre commandes avant l'ajout: " + commandSiseBefAdd);
                     System.out.println("Table No." + this.getNumeroDeTable());
                     System.out.println("Nombre de menu avant l'ajout: " + menuSizeBefAdd);
-                    System.out.println("Nombre de menu après l'ajout: " +menuSizeAfterAdd + "\n");
+                    System.out.println("Nombre de menu après l'ajout: " + menuSizeAfterAdd + "\n");
 
 
-                    System.out.println("Nombre de commande créees après ajout :"+commandSizeAfterAdd);
+                    System.out.println("Nombre de commande créees après ajout :" + commandSizeAfterAdd);
 
                     if (menuSizeAfterAdd > 0) {
                         getButtonSource(this.getNumeroDeTable()).setBackground(new Color(34, 81, 222));
@@ -481,7 +481,6 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                     timer.setRepeats(false);
                     timer.start();
                     optionPane.createDialog(null, "Menu ajouté avec succès").setVisible(true);
-
 
 
                     setPlatItemSelected(null);
@@ -525,87 +524,85 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
         }
         if (event.equals("Update or Save Commande")) {
             Commande cde = new Commande(this.getNumeroDeTable());
-            if (cde.getNumTab()  == null ) {
+            if (cde.getNumTab() == null) {
                 timer.setRepeats(false);
                 timer.start();
                 optionPane.createDialog(null, "Aucune commande effectuée !").setVisible(true);
             } else {
-                contr = new MenuController();
-                 laCommande.setNumTab(this.getNumeroDeTable());
-
-                 laCommande.setMenus(laCommande.displayCommandForDB());
-                 laCommande.setPrixTotal(laCommande.getPrixTotal());
-//                 laCommande.addCommande(this.getNumeroDeTable(), laCommande.getListeMenu());
-//                commandSizeAfterAdd = laCommande.getListeDesCommandes().size();
-//                System.out.println("Nombre de commande après ajout :"+commandSizeAfterAdd);
-                if ( menuSizeBefAdd < menuSizeAfterAdd) {
-                    //ToDo Insérer la méthode Update ici
-                    if(commandSiseBefAdd == commandSizeAfterAdd) {
+                // Chargement des données du menu créee
+                laCommande.setNumTab(this.getNumeroDeTable());
+                laCommande.setMenus(laCommande.displayCommandForDB());
+                laCommande.setPrixTotalFromDB(laCommande.getPrixTotal());
+                //laCommande.setPrixTotalFromDB(laCommande.getPrixTotalFromDB());
+                if (menuSizeBefAdd < menuSizeAfterAdd) {
+                    // et que la taille de commande n'a pas varié
+                    if (commandSiseBefAdd == commandSizeAfterAdd) {
                         try {
-                            // contr.callAddCommande(laCommande.getListeDesCommandes());
-                            contr.callUpdateCommande(this.getNumeroDeTable(), laCommande.getListeDesCommandes());
+                            //Alors met à jour la liste de menu et le prix pour la même commande dans la base de données
+                            contr.callUpdateCommandeDAO(this.getNumeroDeTable(), laCommande.getListeDesCommandes());
                             timer.setRepeats(false);
                             timer.start();
                             optionPane.createDialog(null, "Commande updatée avec succes !").setVisible(true);
+
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
+                       // laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
                     }
                 }
+                if (menuSizeBefAdd < menuSizeAfterAdd && commandSiseBefAdd < commandSizeAfterAdd) {
+                        laCommande.setNumTab(this.getNumeroDeTable());
+                    try {
+                        contr.callAddCommandeDAO(laCommande.getListeDesCommandes());
+                        timer.setRepeats(false);
+                        timer.start();
+                        optionPane.createDialog(null, "Commande_2 insérée avec succes !").setVisible(true);
+                       
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
-
-            if (menuSizeBefAdd < menuSizeAfterAdd && commandSiseBefAdd < commandSizeAfterAdd) {
-
-                try {
-                    contr.callAddCommande(laCommande.getListeDesCommandes());
-                    timer.setRepeats(false);
-                    timer.start();
-                    optionPane.createDialog(null, "Commande_2 insérée avec succes !").setVisible(true);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
+                    laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
                 }
-            }
 
             }
         }
 
-        if(event.equals("Toutes les commandes"))
-         {
-        // ToDo : Effacer just for test: A effacer
-        System.out.println(" On est dans affichage toutes les commandes");
-        table = new ViewTable(contr.callGetAllCammandes()); // paramètre est l'arralist constitué de données de la bd
-        table.setVisible(true);
+        if (event.equals("Toutes les commandes")) {
+            // ToDo : Effacer just for test: A effacer
+            System.out.println(" On est dans affichage toutes les commandes");
+            table = new ViewTable(contr.callGetAllCammandes()); // paramètre est l'arralist constitué de données de la bd
+            table.setVisible(true);
         }
-    //ToDo : prévoir un bouton pour effacer dernier menu de la commande courante affichée en détail
-}
-
-
-        /**
-         * Confirme la sortie du programme si la réponse à la question est oui. Le
-         * programme continue si la réponse est non!
-         */
-        private void exitConfirmation () {
-            if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-                System.exit(ABORT);
-
-        }
-
-        public JButton getButtonSource (String numTab){
-            JButton bouton = new JButton();
-            if (numTab.equals(" 1"))
-                bouton = tab1;
-            if (numTab.equals(" 2"))
-                bouton = tab2;
-            if (numTab.equals(" 3"))
-                bouton = tab3;
-            if (numTab.equals(" 4"))
-                bouton = tab4;
-            if (numTab.equals(" 5"))
-                bouton = tab5;
-            if (numTab.equals(" 6"))
-                bouton = tab6;
-            return bouton;
-        }
+        //ToDo : prévoir un bouton pour effacer dernier menu de la commande courante affichée en détail
     }
+
+    /**
+     * Confirme la sortie du programme si la réponse à la question est oui. Le
+     * programme continue si la réponse est non!
+     */
+    private void exitConfirmation() {
+        if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+            System.exit(ABORT);
+
+    }
+
+    public JButton getButtonSource(String numTab) {
+        JButton bouton = new JButton();
+        if (numTab.equals(" 1"))
+            bouton = tab1;
+        if (numTab.equals(" 2"))
+            bouton = tab2;
+        if (numTab.equals(" 3"))
+            bouton = tab3;
+        if (numTab.equals(" 4"))
+            bouton = tab4;
+        if (numTab.equals(" 5"))
+            bouton = tab5;
+        if (numTab.equals(" 6"))
+            bouton = tab6;
+        return bouton;
+    }
+}
 

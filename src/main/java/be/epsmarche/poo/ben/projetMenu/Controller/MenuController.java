@@ -28,129 +28,124 @@ import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
 
 /**
  * Controleur: Classe permettant servant d'intermédiaire entre le modèle et la vue
+ *
  * @since V4
  */
 public class MenuController {
 
-	// Attributs du controleur
-	private static ViewAccueil accueil;
-	private static CommandesDAO comDAO;
-	private static ConnectDAO DAOcon;
-	/**
-	 * Attribut de chargement
-	 */
-	private static Loader load = null;
+    // Attributs du controleur
+    private static ViewAccueil accueil;
+    private static CommandesDAO comDAO = new CommandesDAO();
+    private static ConnectDAO DAOcon;
+    /**
+     * Attribut de chargement
+     */
+    private static Loader load = null;
 //	private ViewTable afficheTable;
 //	private ViewAjoutFormulaire formulaireAjout;
 //	private ViewModifFormulaire modifFormulaire;
-	
-	private static Carte carte = new Carte();
-	private static PlatFactory fabricPlat = new PlatFactory();
-	private Choix platChoisi, accompChoisi, dessertChoisi;
 
-	// Rafraichisseur de vues: un écouteur spécial
-	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private static Carte carte = new Carte();
+    private static PlatFactory fabricPlat = new PlatFactory();
+    private Choix platChoisi, accompChoisi, dessertChoisi;
 
-	public MenuController() {
+    // Rafraichisseur de vues: un écouteur spécial
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-		EventQueue.invokeLater(new Runnable() {
+    public MenuController() {
 
-			@Override
-			public void run() {
+        EventQueue.invokeLater(new Runnable() {
 
-				try {
-					UIManager.setLookAndFeel(new NimbusLookAndFeel());
-				} catch (UnsupportedLookAndFeelException e) {
-					e.printStackTrace();
-				}
+            @Override
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel(new NimbusLookAndFeel());
+                } catch (UnsupportedLookAndFeelException e) {
+                    e.printStackTrace();
+                }
 
-			}
-		});
+            }
+        });
 
-	}
-	
-	public void start() {
-		accueil = new ViewAccueil();
-		accueil.setVisible(true);
-	}
+    }
 
-	/**
-	 * Methode getInstance()
-	 * 
-	 * @return une instance unique du controleur
-	 */
-	public static MenuController getControInstance() {
-		return ControllerHolder.INSTANCE;
-	}
+    public void start() {
+        accueil = new ViewAccueil();
+        accueil.setVisible(true);
+    }
 
-	public static Loader loadDataBase() throws ParserConfigurationException, SAXException, IOException {
-		load = new Loader("menu.xml");
-		return load;
-	}
+    /**
+     * Methode getInstance()
+     *
+     * @return une instance unique du controleur
+     */
+    public static MenuController getControInstance() {
+        return ControllerHolder.INSTANCE;
+    }
 
+    public static Loader loadDataBase() throws ParserConfigurationException, SAXException, IOException {
+        load = new Loader("menu.xml");
+        return load;
+    }
 
 
-
-	/**
-	 * Classe interne ControllerHolder permet de créer un singleton du controleur
-	 * MenuConroller. Ce singleton es appelé INSTANCE
-	 * 
-	 * @author ben
-	 */
-	private static class ControllerHolder {
-		private static final MenuController INSTANCE = new MenuController();
-	}
-
+    /**
+     * Classe interne ControllerHolder permet de créer un singleton du controleur
+     * MenuConroller. Ce singleton es appelé INSTANCE
+     *
+     * @author ben
+     */
+    private static class ControllerHolder {
+        private static final MenuController INSTANCE = new MenuController();
+    }
 
 
+    /**
+     * Affichage d'un plat du menu
+     *
+     * @param plat
+     * @return
+     */
+    public static String showMenu(Iplat plat) {
+        return (plat.toString());
+    }
+
+    public static Double subTotal(Iplat menu) {
+        return menu.getPrix();
+    }
+
+    /**
+     * methode permettant l'instanciation de la classe Loader
+     *
+     * @param l
+     * @return
+     */
+    public static Loader getLoadObject(Loader l) {
+        try {
+
+            l = loadDataBase();
+        } catch (ParserConfigurationException | SAXException | IOException e1) {
+
+            e1.printStackTrace();
+        }
+        return l;
+    }
+
+    public boolean callUpdateCommandeDAO(String numt, Map<String, ArrayList<Iplat>> listeDesCommandes) throws SQLException {
+        comDAO = new CommandesDAO();
+        return comDAO.updateCommandeDAO(numt, listeDesCommandes);
+    }
+    public boolean callAddCommandeDAO(Map<String, ArrayList<Iplat>> listeDesCommandes) throws SQLException {
+        comDAO = new CommandesDAO();
+        return comDAO.addCommandeDAO(listeDesCommandes);
+    }
+
+    public ArrayList callGetAllCammandes() {
+        //récupérer l'arrayList
+        return (ArrayList) comDAO.getAllCommandes();
+    }
 
 
-
-	/**
-	 * Affichage d'un plat du menu
-	 * @param plat
-	 * @return
-	 */
-	public static String showMenu(Iplat plat) {
-		return (plat.toString());
-	}
-
-	public static Double subTotal(Iplat menu) {
-		return menu.getPrix();
-	}
-	
-	/**
-	 * methode permettant l'instanciation de la classe Loader
-	 * @param l
-	 * @return
-	 */
-	public static Loader getLoadObject(Loader l) {
-		try {
-
-			l = loadDataBase();
-		} catch (ParserConfigurationException | SAXException | IOException e1) {
-		
-			e1.printStackTrace();
-		}
-		return l;
-	}
-	public boolean callUpdateCommande( String numt, Map<String, ArrayList<Iplat>> listeDesCommandes)throws SQLException {
-		comDAO = new CommandesDAO();
-		return comDAO.updateCommande(numt,listeDesCommandes);
-	}
-
-	public boolean callAddCommande(Map<String, ArrayList<Iplat>> listeDesCommandes) throws SQLException {
-		comDAO = new CommandesDAO();
-		return comDAO.addCommande(listeDesCommandes);
-	}
-	public ArrayList callGetAllCammandes(){
-		return (ArrayList) comDAO.getAllCommandes();
-	}
-
-	public String callCommandeForDB(){
-		Commande com = new Commande();
-		return com.displayCommandForDB();
-	}
 //	public PreparedStatement callPreparedStatement(){
 //
 //		return DA
