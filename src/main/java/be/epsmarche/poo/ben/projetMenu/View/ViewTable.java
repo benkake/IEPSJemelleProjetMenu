@@ -41,7 +41,6 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
     private JTable tableDesCommandes;
 
     private ArrayList list;
-//	private Map <String, ArrayList<Iplat>> list = new HashMap<>();
 
     /**
      * constructeur
@@ -77,7 +76,7 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
         this.tableDesCommandes.setGridColor(Color.BLACK);
         // Placement de la table dans un scrollPane pour pouvoir le parcourir totalement
         JScrollPane tableContainer = new JScrollPane(tableDesCommandes);
-        setRendrerTable(this.list);
+        setRenderTable(this.list);
 
         // configuration des headers
         this.tableDesCommandes.getTableHeader().setForeground(Color.black); // couleur des caractères
@@ -93,7 +92,7 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
         tableDesCommandes.getRowSorter().addRowSorterListener(new RowSorterListener() {
             @Override
             public void sorterChanged(RowSorterEvent e) {
-                setRendrerTable(list);  // ToDo : vérifier si renderTable ou rendrer
+                setRenderTable(list); 
             }
         });
 
@@ -108,18 +107,19 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
                 commandeSelected.setListeMenu((ArrayList<Iplat>) tableDesCommandes.getValueAt(row, 2));
                 commandeSelected.setPrixTotalFromDB((Double) tableDesCommandes.getValueAt(row, 3));
                 commandeSelected.setDateCommande((Date) tableDesCommandes.getValueAt(row, 4));
-                commandeSelected.setPayee((Boolean) tableDesCommandes.getValueAt(row, 5));
-                // à Créer dans le controleur une méthode qui permet d'afficher une fenêtre modale pour modifier une ligne
-                //	contr.showFormModif(commandeSelected);
+                commandeSelected.setPayee((Boolean) tableDesCommandes.getValueAt(row, 5));                
             }
         });
     }
 
-// rendu de la table colonne par colonne
-
-    public void setRendrerTable(ArrayList list) {
+    /**
+     * Methode permettant d'appliquer le render à un composant de la table
+     * @param list
+     */
+    public void setRenderTable(ArrayList list) {
         if (!(list.isEmpty())) {
-            DefaultTableCellRenderer rendu = new DefaultTableCellRenderer();
+            //DefaultTableCellRenderer rendu = new DefaultTableCellRenderer();
+        	DefaultTableCellRenderer rendu = new RenderTable();
             // Extraction des données des colonnes
             for (int i = 0; i < tableDesCommandes.getColumnCount(); ++i) {
                 // Création objet colonne
@@ -259,7 +259,7 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
     //------------------------------------
 
     /**
-     * Classe interne permettant le rendu de toutes les cellules de la table
+     * Classe interne permettant de varier les couleurs de toutes les cellules de la table
      */
 
     public class RenderTable extends DefaultTableCellRenderer {
@@ -272,12 +272,18 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             // Selectionne la valeur de la colonne sur laquelle on trvaille
-            if (!isSelected) {
-                if (row % 2 == 0)
-                    cell.setBackground(Color.GRAY);
-                cell.setBackground(Color.WHITE);
+            Boolean payee = (Boolean) table.getModel().getValueAt(row,5 );
+            
+            if(payee) {
+            	cell.setBackground(Color.YELLOW);
+            }else {
+            	if (row % 2 == 0) {
+            		cell.setBackground(Color.red);
+            	}else {
+            		cell.setBackground(Color.WHITE);
+            	}
             }
-
+            
             return cell;
         }
 

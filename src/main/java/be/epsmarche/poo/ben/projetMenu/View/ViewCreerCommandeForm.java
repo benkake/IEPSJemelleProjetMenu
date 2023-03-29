@@ -522,21 +522,26 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                 }
             }
         }
+        
+        
         if (event.equals("Update or Save Commande")) {
-            Commande cde = new Commande(this.getNumeroDeTable());
+            
+//        	Commande cde = new Commande(this.getNumeroDeTable());
+        	Commande cde = new Commande();
+        	cde.setNumTab(this.getNumeroDeTable());
             if (cde.getNumTab() == null) {
                 timer.setRepeats(false);
                 timer.start();
                 optionPane.createDialog(null, "Aucune commande effectuée !").setVisible(true);
             } else {
                 // Chargement des données du menu créee
-                laCommande.setNumTab(this.getNumeroDeTable());
+                //laCommande.setNumTab(this.getNumeroDeTable());
                 laCommande.setMenus(laCommande.displayCommandForDB());
                 laCommande.setPrixTotalFromDB(laCommande.getPrixTotal());
                 //laCommande.setPrixTotalFromDB(laCommande.getPrixTotalFromDB());
                 if (menuSizeBefAdd < menuSizeAfterAdd) {
                     // et que la taille de commande n'a pas varié
-                    if (commandSiseBefAdd == commandSizeAfterAdd) {
+                    if (commandSiseBefAdd == commandSizeAfterAdd ) {
                         try {
                             //Alors met à jour la liste de menu et le prix pour la même commande dans la base de données
                             contr.callUpdateCommandeDAO(this.getNumeroDeTable(), laCommande.getListeDesCommandes());
@@ -547,9 +552,11 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
-                       // laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
+                       
                     }
                 }
+                
+                
                 if (menuSizeBefAdd < menuSizeAfterAdd && commandSiseBefAdd < commandSizeAfterAdd) {
                         laCommande.setNumTab(this.getNumeroDeTable());
                     try {
@@ -562,18 +569,22 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                         throw new RuntimeException(ex);
                     }
 
-                    laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
+                   
                 }
+                laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
 
             }
         }
+    
 
         if (event.equals("Toutes les commandes")) {
-            // ToDo : Effacer just for test: A effacer
-            System.out.println(" On est dans affichage toutes les commandes");
             table = new ViewTable(contr.callGetAllCammandes()); // paramètre est l'arralist constitué de données de la bd
             table.setVisible(true);
+        }else if(event.equals("Commandes du Jour")) {
+        	table = new ViewTable(contr.callGetCommandeDuJour()); // paramètre est l'arralist constitué de données de la bd
+            table.setVisible(true);
         }
+        
         //ToDo : prévoir un bouton pour effacer dernier menu de la commande courante affichée en détail
     }
 

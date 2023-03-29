@@ -52,7 +52,6 @@ public class CommandesDAO {
 
             // parcours toute la table afin de lire toutes les lignes
             while (res.next()) { // fonctionne comme un itérateur
-
                 Commande commande = new Commande();
                 commande.setIdCommande(res.getInt("id"));
                 commande.setNumTab(res.getString("numtable"));
@@ -63,7 +62,6 @@ public class CommandesDAO {
                 list.add(commande);
 
                 System.out.println("Voici le prix(dans CommandeDAO): "+res.getDouble("prix"));
-
 
             }
 
@@ -166,13 +164,15 @@ public class CommandesDAO {
         return list;
 
     }
-
+    
+    
+    
     /**
      * Permet d'afficher les commandes payées
      *
      * @return
      */
-    public List getCommandesPayees() {
+    public List getCommandeDuJour() {
         // ToDo : voir comment changer en Map;
         ArrayList list = new ArrayList();
         java.sql.Connection con = null;
@@ -183,8 +183,7 @@ public class CommandesDAO {
             // Crétion d'un état de connexion et stockage dans la variable con
             con = ConnectDAO.getInstance().connection();
             // Préparation d'une requête de selection
-            //	String query = "SELECT * FROM commandes Where payee = 1";
-            String query = "SELECT * FROM commandes";
+            String query = "SELECT * FROM commandes WHERE CAST(dateCommande AS DATE)= DATE(now());";
             // Stockage de la requête préparée dans l'etat de connexion
             pStmt = con.prepareStatement(query);
             // Stockage de la demande d'execution de la requête préparée, dans la variable res
@@ -200,6 +199,7 @@ public class CommandesDAO {
                 commande.setPrixTotalFromDB(res.getDouble("prix"));
                 commande.setDateCommande(res.getDate("dateCommande"));
                 commande.setPayee(res.getBoolean("payee"));
+                list.add(commande);
             }
 
         } catch (SQLException ex) {
@@ -233,6 +233,7 @@ public class CommandesDAO {
         return list;
     }
 
+    
     /**
      * Permet d'ajouter dans la BD les commandes préalablement crées ==> listeMenu avec Numéro de table dans notre cas
      *
@@ -256,12 +257,12 @@ public class CommandesDAO {
                 String numTable = commandes.getKey();
                 ArrayList<Iplat> uneCommande = commandes.getValue();
 
-                pStmt.setString(1, numTable);
+                pStmt.setString(1, numTable); // numero de table
                 System.out.println(" Numero de table pour la BD = " + numTable);
 
                 Double prixTotal = 0.;
                 for (Iplat menus : uneCommande) {
-                    pStmt.setString(2, menus.toString()); // attention voir si menu ne prends pas la listeMenu réadaptée pour les besoins d'affichage
+                    pStmt.setString(2, menus.toString()); // menu
                     System.out.println(" commande pour la BD =\n " + menus.toString());
                     prixTotal += menus.getPrix();
                     System.out.println("=== prix du menu pour la BD = " + menus.getPrix());
@@ -396,6 +397,7 @@ public class CommandesDAO {
 
     }
 
+    
 
     public boolean deleteCommande(int id) {
 

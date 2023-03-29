@@ -62,6 +62,7 @@ public class ConnectDAO {
             // Chargement du driver de mysql
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Connexion à la BD
+            // on peut remplacer la partie entre parenthèse par une méthode qui retourne la partie paramètre
             con = (Connection) DriverManager.getConnection("jdbc:mysql://" + this.URL, this.USER, this.PASS);
             return con;
 

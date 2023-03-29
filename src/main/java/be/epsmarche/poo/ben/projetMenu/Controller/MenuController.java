@@ -144,6 +144,10 @@ public class MenuController {
         //récupérer l'arrayList
         return (ArrayList) comDAO.getAllCommandes();
     }
+    
+    public ArrayList callGetCommandeDuJour() {
+    	return (ArrayList) comDAO.getCommandeDuJour();
+    }
 
 
 //	public PreparedStatement callPreparedStatement(){
