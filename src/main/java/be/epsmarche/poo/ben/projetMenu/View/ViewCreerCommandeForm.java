@@ -200,7 +200,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
         afficher.add(ToutesLesComandes);
         ToutesLesComandes.addActionListener(this);
 
-//		JMenuItem CommandeDuJour = new JMenuItem("Etat des encaissements");
+
         afficher.add(CommandeDuJour);
         CommandeDuJour.addActionListener(this);
 
@@ -522,71 +522,78 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
                 }
             }
         }
-        
-        
+
+
         if (event.equals("Update or Save Commande")) {
-            
-//        	Commande cde = new Commande(this.getNumeroDeTable());
-        	Commande cde = new Commande();
-        	cde.setNumTab(this.getNumeroDeTable());
-            if (cde.getNumTab() == null) {
+            Commande cde = new Commande();
+            cde.setNumTab(this.getNumeroDeTable());
+            ArrayList <String> tableOQP = new ArrayList<>();
+            if (cde.getNumTab() == null || laCommande.getListeDesCommandes().isEmpty()) {
                 timer.setRepeats(false);
                 timer.start();
                 optionPane.createDialog(null, "Aucune commande effectuée !").setVisible(true);
             } else {
-                // Chargement des données du menu créee
-                //laCommande.setNumTab(this.getNumeroDeTable());
+                tableOQP = contr.CallGetTableOccupee();
+                // Chargement des données du menu crée
+                String numtbl = this.getNumeroDeTable();
+                laCommande.setNumTab(numtbl);
                 laCommande.setMenus(laCommande.displayCommandForDB());
                 laCommande.setPrixTotalFromDB(laCommande.getPrixTotal());
-                //laCommande.setPrixTotalFromDB(laCommande.getPrixTotalFromDB());
-                if (menuSizeBefAdd < menuSizeAfterAdd) {
-                    // et que la taille de commande n'a pas varié
-                    if (commandSiseBefAdd == commandSizeAfterAdd ) {
-                        try {
-                            //Alors met à jour la liste de menu et le prix pour la même commande dans la base de données
-                            contr.callUpdateCommandeDAO(this.getNumeroDeTable(), laCommande.getListeDesCommandes());
-                            timer.setRepeats(false);
-                            timer.start();
-                            optionPane.createDialog(null, "Commande updatée avec succes !").setVisible(true);
 
-                        } catch (SQLException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                       
-                    }
-                }
-                
-                
-                if (menuSizeBefAdd < menuSizeAfterAdd && commandSiseBefAdd < commandSizeAfterAdd) {
-                        laCommande.setNumTab(this.getNumeroDeTable());
+                System.out.println("************ View Créer Cde: ligne 541 numtab = "+numtbl);
+                if (!(tableOQP.contains(numtbl))) {
                     try {
+                        //Ajoute la nouvelle table
+                        System.out.println("************ View Créer Cde: ligne 545 numtab avant insertion = "+numtbl);
                         contr.callAddCommandeDAO(laCommande.getListeDesCommandes());
                         timer.setRepeats(false);
                         timer.start();
-                        optionPane.createDialog(null, "Commande_2 insérée avec succes !").setVisible(true);
-                       
+                        optionPane.createDialog(null, "1: Commande ajoutée avec succes !").setVisible(true);
+
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
+                    System.out.println("************ View Créer Cde: après insertion: ligne 554 numtab  = "+numtbl);
+                } else {
+                    System.out.println("************ View Créer Cde: avant update: ligne 557 numtab  = "+numtbl);
+                    try {
+                        contr.callUpdateCommandeDAO(numtbl, laCommande.getListeDesCommandes());
+                        timer.setRepeats(false);
+                        timer.start();
+                        optionPane.createDialog(null, "0: Commande updatée avec succes !").setVisible(true);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    System.out.println("************ View Créer Cde: après update: ligne 567 numtab  = "+numtbl);
 
-                   
                 }
                 laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
-
+                System.out.println("************ View Créer Cde: avant update: ligne 569 lacommNumtab  = "+laCommande.getNumTab());
             }
         }
-    
 
-        if (event.equals("Toutes les commandes")) {
-            table = new ViewTable(contr.callGetAllCammandes()); // paramètre est l'arralist constitué de données de la bd
-            table.setVisible(true);
-        }else if(event.equals("Commandes du Jour")) {
-        	table = new ViewTable(contr.callGetCommandeDuJour()); // paramètre est l'arralist constitué de données de la bd
+        if(event.equals("Toutes les commandes")){
+        table = new ViewTable(contr.callGetAllCammandes()); // paramètre est l'arralist constitué de données de la bd
+        table.setVisible(true);
+         }else if(event.equals("Commandes du Jour")){
+        table = new ViewTable();
+        table.setTitle("Les commandes du jour");
+        if (contr.callGetCommandeDuJour().isEmpty()) {
+            timer.setRepeats(false);
+            timer.start();
+            optionPane.createDialog(null, "Pas encore de Commande!").setVisible(true);
+        } else {
+            table = new ViewTable(contr.callGetCommandeDuJour()); // paramètre est l'arraylist constitué de données de la bd
             table.setVisible(true);
         }
-        
-        //ToDo : prévoir un bouton pour effacer dernier menu de la commande courante affichée en détail
     }
+
+}
+
+
+
+        //ToDo : prévoir un bouton pour effacer dernier menu de la commande courante affichée en détail
+
 
     /**
      * Confirme la sortie du programme si la réponse à la question est oui. Le

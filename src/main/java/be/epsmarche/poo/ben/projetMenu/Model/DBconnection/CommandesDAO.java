@@ -3,7 +3,10 @@ package be.epsmarche.poo.ben.projetMenu.Model.DBconnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -257,19 +260,17 @@ public class CommandesDAO {
                 String numTable = commandes.getKey();
                 ArrayList<Iplat> uneCommande = commandes.getValue();
 
-                pStmt.setString(1, numTable); // numero de table
-                System.out.println(" Numero de table pour la BD = " + numTable);
-
-                Double prixTotal = 0.;
-                for (Iplat menus : uneCommande) {
-                    pStmt.setString(2, menus.toString()); // menu
-                    System.out.println(" commande pour la BD =\n " + menus.toString());
-                    prixTotal += menus.getPrix();
-                    System.out.println("=== prix du menu pour la BD = " + menus.getPrix());
-                    pStmt.setDouble(3, prixTotal); // voir si prix total  stocke la méthode get prix total
-                    System.out.println("=== prix total pour la BD= " + prixTotal);
-                }
-
+                    pStmt.setString(1, numTable); // numero de table
+                    System.out.println(" Numero de table pour la BD = " + numTable);
+                    Double prixTotal = 0.;
+                    for (Iplat menus : uneCommande) {
+                        pStmt.setString(2, menus.toString()); // menu
+                        System.out.println(" commande pour la BD =\n " + menus.toString());
+                        prixTotal += menus.getPrix();
+                        System.out.println("=== prix du menu pour la BD = " + menus.getPrix());
+                        pStmt.setDouble(3, prixTotal); // voir si prix total  stocke la méthode get prix total
+                        System.out.println("=== prix total pour la BD= " + prixTotal);
+                    }
             }
             pStmt.executeUpdate();
             // valider les modification effectuées dans la table
@@ -310,11 +311,6 @@ public class CommandesDAO {
 
     }
 
-
-    // ToDo: Refelexion: Pour ne pas avoir plusieurs commandes pour une même table en journée
-    // on peut à chaque fois que un numéro de table existe dans la BD, update plutôt cette
-    // ligne avec les données correspondantes et non insérer.
-
     /**
      * Met à jour le combre de menu dans une commande et le prix total la date d'aujourd'hui
      * @param numTb
@@ -326,14 +322,19 @@ public class CommandesDAO {
 
         java.sql.Connection con = null;
         java.sql.PreparedStatement pStmt = null;
+        Date maintenant = new java.util.Date();
+        Timestamp dateActuelle = new Timestamp(maintenant.getTime());
+
+
 
         try {
             // Création d'un état de connexion et stockage dans la variable con
             con = (Connection) ConnectDAO.getInstance().connection();
             // desactivation de la validation automatique des transaction par le pilote JDBC
             con.setAutoCommit(false); // methode de la clsse Connection
+
             // Préparation d'une requête de mise à jour
-            String query = "UPDATE commandes SET menus = ?, prix = ? WHERE numtable = ? AND CAST(dateCommande AS DATE)= DATE(now()) ";
+            String query = "UPDATE commandes SET menus = ?, prix = ?, dateCommande = ? WHERE numtable = ? AND CAST(dateCommande AS DATE)= DATE(now()) ";
 
             // Stockage de la requête préparée dans l'etat de connexion
             pStmt = con.prepareStatement(query);
@@ -354,10 +355,11 @@ public class CommandesDAO {
                 System.out.println("----------Commande mise à jour dans la DB =\n " + menusConcat); // Todo : effacer
                 pStmt.setDouble(2, prixTotal); // voir si prix total  stocke la méthode get prix total
                 System.out.println("=== prix total mis à jour dans la DB = " + prixTotal); // Todo : effacer
-                pStmt.setString(3, numTable);
+                pStmt.setTimestamp(3, dateActuelle);
+                pStmt.setString(4, numTable);
 
+                pStmt.executeUpdate();
             }
-            pStmt.executeUpdate();
             // valider les modification effectuées dans la table
             con.commit();
             return true;
@@ -392,9 +394,7 @@ public class CommandesDAO {
                     Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
         }
-
     }
 
     
@@ -456,6 +456,59 @@ public class CommandesDAO {
 
         }
 
+    }
+    public List getTableOccupee() {
+        // ToDo : voir comment changer en Map;
+        ArrayList<String> list= new ArrayList<>();
+        java.sql.Connection con = null;
+        java.sql.PreparedStatement pStmt = null;
+        ResultSet res = null;
+        try {
+
+            // Crétion d'un état de connexion et stockage dans la variable con
+            con = ConnectDAO.getInstance().connection();
+            // Préparation d'une requête de selection
+            String query = "SELECT numtable FROM commandes WHERE CAST(dateCommande AS DATE)= DATE(now());";
+            // Stockage de la requête préparée dans l'etat de connexion
+            pStmt = con.prepareStatement(query);
+            // Stockage de la demande d'execution de la requête préparée, dans la variable res
+            // qui permet de lire une ligne de la table des données
+            res = pStmt.executeQuery();
+
+            // parcours de toute la table afin de lire toutes les lignes
+            while (res.next()) { // fonctionne comme un itérateur
+                String numtbl = res.getString("numtable");
+                list.add(numtbl);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (pStmt != null) {
+                try {
+                    pStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CommandesDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return list;
     }
 
 }

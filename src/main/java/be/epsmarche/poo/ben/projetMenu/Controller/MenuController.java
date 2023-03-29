@@ -148,7 +148,9 @@ public class MenuController {
     public ArrayList callGetCommandeDuJour() {
     	return (ArrayList) comDAO.getCommandeDuJour();
     }
-
+    public ArrayList CallGetTableOccupee(){
+        return (ArrayList) comDAO.getTableOccupee();
+    }
 
 //	public PreparedStatement callPreparedStatement(){
 //

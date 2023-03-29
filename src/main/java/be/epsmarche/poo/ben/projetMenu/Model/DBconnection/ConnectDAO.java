@@ -1,11 +1,8 @@
 package be.epsmarche.poo.ben.projetMenu.Model.DBconnection;
 
 import java.sql.*;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
-
 
 /**
  * Classe permettant la connexion à la Base de données

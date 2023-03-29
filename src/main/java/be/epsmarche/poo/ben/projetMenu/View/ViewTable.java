@@ -37,11 +37,16 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
  */
 public class ViewTable extends JDialog implements PropertyChangeListener {
 
-    private final MenuController contr;
+    private MenuController contr = new MenuController();
     private JTable tableDesCommandes;
 
     private ArrayList list;
 
+    /**
+     * constructeur
+     */
+    public ViewTable(){
+    }
     /**
      * constructeur
      *
@@ -263,7 +268,6 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
      */
 
     public class RenderTable extends DefaultTableCellRenderer {
-
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
@@ -274,16 +278,13 @@ public class ViewTable extends JDialog implements PropertyChangeListener {
             // Selectionne la valeur de la colonne sur laquelle on trvaille
             Boolean payee = (Boolean) table.getModel().getValueAt(row,5 );
             
-            if(payee) {
-            	cell.setBackground(Color.YELLOW);
-            }else {
-            	if (row % 2 == 0) {
-            		cell.setBackground(Color.red);
+            if(!payee) {
+            	cell.setBackground(Color.RED);
+            }else if (row % 2 == 0) {
+            		cell.setBackground(Color.YELLOW);
             	}else {
             		cell.setBackground(Color.WHITE);
-            	}
             }
-            
             return cell;
         }
 
