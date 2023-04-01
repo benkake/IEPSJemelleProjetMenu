@@ -6,13 +6,13 @@ package be.epsmarche.poo.ben.projetMenu.Model.Plat;
  * @author ben
  */
 public interface Iplat {
-    String getPeparation();
+	String getPeparation();
 
-    Double getPrix();
+	Double getPrix();
 
-    void setPrix(Double prix);
+	void setPrix(Double prix);
 
-    String getType();
+	String getType();
 
-    void setType(String type);
+	void setType(String type);
 }

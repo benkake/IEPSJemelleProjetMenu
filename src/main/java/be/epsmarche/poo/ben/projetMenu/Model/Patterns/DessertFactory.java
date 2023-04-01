@@ -9,26 +9,26 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 
 public class DessertFactory {
 
-    /**
-     * Constructeur par defaut
-     */
-    public DessertFactory() {
+	/**
+	 * Constructeur par defaut
+	 */
+	public DessertFactory() {
 
-    }
+	}
 
-    public Iplat getDess(Iplat plat, Choix dess) {
+	public Iplat getDess(Iplat plat, Choix dess) {
 
-        if (dess.getType() == null)
-            return null;
-        if (dess.getType().equalsIgnoreCase("glace"))
-            return new Glace(plat, dess.getDescription(), dess.getPrix());
-        if (dess.getType().equalsIgnoreCase("fruit"))
-            return new Fruit(plat, dess.getDescription(), dess.getPrix());
-        if (dess.getType().equalsIgnoreCase("patisserie"))
-            return new Patisserie(plat, dess.getDescription(), dess.getPrix());
-        if (dess.getType().equalsIgnoreCase("pousseCafe"))
-            return new PousseCafe(plat, dess.getDescription(), dess.getPrix());
+		if (dess.getType() == null)
+			return null;
+		if (dess.getType().equalsIgnoreCase("glace"))
+			return new Glace(plat, dess.getDescription(), dess.getPrix());
+		if (dess.getType().equalsIgnoreCase("fruit"))
+			return new Fruit(plat, dess.getDescription(), dess.getPrix());
+		if (dess.getType().equalsIgnoreCase("patisserie"))
+			return new Patisserie(plat, dess.getDescription(), dess.getPrix());
+		if (dess.getType().equalsIgnoreCase("pousseCafe"))
+			return new PousseCafe(plat, dess.getDescription(), dess.getPrix());
 
-        return null;
-    }
+		return null;
+	}
 }
