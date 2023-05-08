@@ -29,19 +29,11 @@ import java.util.Objects;
  * @version V.3
  */
 public class ViewCreerCommandeForm extends JFrame implements ItemListener, ActionListener {
-
 	private static final long serialVersionUID = -8859500785480111589L;
 	private static JComboBox<String> comboBox1, comboBox2, comboBox3;
-	// ***---------------------------------------------------------
 	private static Loader loadedObjects;
 	private final Carte carte;
 	private final MenuController contr = new MenuController();
-
-	private ViewTable table;
-
-		private ViewOrderStatistics statCom;
-		private ViewGainStatistics statGain ;
-	private ArrayList<String> tableOQP;
 
 	private final JMenuBar barreDeMenu = new JMenuBar();
 	private final JMenu demarrer = new JMenu("Demarrer");
@@ -80,7 +72,8 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private JLabel labelEntete2;
 	private String platItemSelected, accompItemSelected, dessItemSelected;
 	// private ViewTable table;
-	private int menuSizeBefAdd, menuSizeAfterAdd, commandSiseBefAdd, commandSizeAfterAdd;
+	private int menuSizeBefAdd;
+	private int menuSizeAfterAdd;
 
 	private String numeroDeTable;
 
@@ -90,9 +83,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	public ViewCreerCommandeForm() {
 		super("Composer la commande");
 		this.carte = new Carte();
-
 		// Configutation de la fenêtre
-
 		this.setSize(1100, 700);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -102,7 +93,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		/*
 		 * récupération de la liste des plats chargés
 		 */
-		ArrayList<Choix> listePlats = carte.getPlatList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
+		ArrayList<Choix> listePlats = carte.getPlatList();
 
 		// Mise à jour de la liste des plats sur la carte
 
@@ -111,41 +102,29 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		/*
 		 * récupération de la liste des accompagnements chargés
 		 */
-		ArrayList<Choix> listeAccomp = carte.getAccompList(); // !!!!!!OK OK OK les plats sont récupérés de la carte
-
+		ArrayList<Choix> listeAccomp = carte.getAccompList();
 		// Mise à jour de la liste des accompagnements sur la carte
-
 		carte.setListeDesAccompagnements(listeAccomp);
 		/*
 		 * récupération de la liste des desserts chargés
 		 */
 		ArrayList<Choix> listeDess = carte.getDessList();
-
 		// Mise à jour de la liste des accompagnements sur la carte
-
 		carte.setListeDesDesserts(listeDess);
-
 		contenu = this.getContentPane();
-
 		// Création d'un panel
-
 		JPanel panel = new JPanel();
 		contenu.add(panel);
 		panel.setBackground(Color.green);
-
 		// Creation et configuration du label
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 250, 230));
 		Font font = new Font("Comfortaa", Font.BOLD, 30);
-
 		// Création d'un label pour l'affichage du texte
-
 		JLabel label = new JLabel("Bienvenu dans le gestionnaire de commandes !");
 		label.setFont(font);
 		panel.add(label);
-
 		// Insertion de la barre de menu dans le frame
 		setJMenuBar(createBarreDeMenu());
-
 		// positionnement des panels
 		PanelsPositions();
 
@@ -202,22 +181,21 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 
 		JMenu afficher = new JMenu("Afficher");
 		etatsDeGest.add(afficher);
-		
+
 		afficher.add(ToutesLesComandes);
 		ToutesLesComandes.addActionListener(this);
 
 		afficher.add(CommandeDuJour);
 		CommandeDuJour.addActionListener(this);
-		
+
 		JMenu diagrammes = new JMenu("Diagrammes");
 		Statistiques.add(diagrammes);
-		
+
 		diagrammes.add(CommandeCharts);
 		CommandeCharts.addActionListener(this);
-		
+
 		diagrammes.add(GainCharts);
 		GainCharts.addActionListener(this);
-		
 		return barreDeMenu;
 	}
 
@@ -295,14 +273,11 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		JPanel centralPanel1 = new JPanel(new GridLayout(5, 0));
 
 		// récupération des id des plats et leur chargement sur la combobox en tant que
-
 		List<String> listeDesIdPlats;
 		listeDesIdPlats = carte.getListeDesIds(carte.getListeDesPlats()); // !!!!!!OK OK OOK
 		comboBox1 = new JComboBox<>(carte.castListeDesId(listeDesIdPlats));
-
 		comboBox1.setPreferredSize(new Dimension(200, 30));
 		comboBox1.setFont(new Font("comfortaa", Font.ITALIC, 32));
-		// comboBox1.setForeground();
 		comboBox1.addItemListener(this);
 
 		// Labelle d'entete
@@ -323,16 +298,13 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		labelPlatType = new JLabel(listeDesIdPlats.get(0), labelPlatType.RIGHT);
 		// Couleur du texte
 		labelPlatType.setForeground(Color.RED);
-
 		centralPanel1.add(labelEntete);
 		centralPanel1.add(labelEntete2);
 		centralPanel1.add(labelQuestPlat);
 		centralPanel1.add(comboBox1);
-
 		// récupération des id des accompagnement et leur chargement sur la combobox
-
 		List<String> listeDesIdAccomp;
-		listeDesIdAccomp = carte.getListeDesIds(carte.getListeDesAccompagnements()); // !!!!!!OK OK OOK
+		listeDesIdAccomp = carte.getListeDesIds(carte.getListeDesAccompagnements());
 		comboBox2 = new JComboBox<>(carte.castListeDesId(listeDesIdAccomp));
 		comboBox2.setPreferredSize(new Dimension(200, 30));
 		comboBox2.setFont(new Font("comfortaa", Font.ITALIC, 32));
@@ -349,10 +321,9 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		centralPanel1.add(labelQuestAcc);
 		centralPanel1.add(comboBox2);
 
-
 		// Les DESSERTS
 		List<String> listeDesIdDess;
-		listeDesIdDess = carte.getListeDesIds(carte.getListeDesDesserts()); // !!!!!!OK OK OOK
+		listeDesIdDess = carte.getListeDesIds(carte.getListeDesDesserts());
 		comboBox3 = new JComboBox<>(carte.castListeDesId(listeDesIdDess));
 		comboBox3.setPreferredSize(new Dimension(200, 30));
 		comboBox3.setFont(new Font("comfortaa", Font.ITALIC, 32));
@@ -436,14 +407,11 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			// Récupération des données du formulaire
 			setPlatItemSelected(Objects.requireNonNull(comboBox1.getSelectedItem()).toString());
 			Choix platChoisi = carte.getPlatChoisi(getPlatItemSelected());
-
 			setAccompItemSelected(Objects.requireNonNull(comboBox2.getSelectedItem()).toString());
 			Choix accompChoisi = carte.getAccompagnementChoisi(getAccompItemSelected());
-
 			setDessItemSelected(Objects.requireNonNull(comboBox3.getSelectedItem()).toString());
 			Choix dessChoisi = carte.getDessertChoisi(getDessItemSelected());
-
-			commandSiseBefAdd = laCommande.getListeDesCommandes().size();
+			int commandSiseBefAdd = laCommande.getListeDesCommandes().size();
 			laCommande.setNumTab(this.getNumeroDeTable());
 			if (JOptionPane.showConfirmDialog(null,
 					"Numéro de la table choisie: " + this.getNumeroDeTable() + "\nPlat choisi: "
@@ -461,12 +429,11 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 
 				} else {
 					menuSizeBefAdd = laCommande.getListeMenu().size();
-
 					Iplat menu = laCommande.getMenuConcocted(platChoisi, accompChoisi, dessChoisi);
 					laCommande.addMenu(menu, this.getNumeroDeTable());
 					menuSizeAfterAdd = laCommande.getListeMenu().size();
 					laCommande.addCommande(this.getNumeroDeTable(), laCommande.getListeMenu());
-					commandSizeAfterAdd = laCommande.getListeDesCommandes().size();
+					int commandSizeAfterAdd = laCommande.getListeDesCommandes().size();
 					timer.setRepeats(false);
 					timer.start();
 					optionPane.createDialog(null, "Menu ajouté avec succès").setVisible(true);
@@ -479,7 +446,6 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			saveCommandeInDB();
 		}
 		checkCommandeCourante();
-
 		if (event.equals("Detail commande courante")) {
 			// Affichage commande dans la console
 			displayCommandeCourante();
@@ -495,9 +461,9 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			if (checkCommandeCourante())
 				displayCommandeCourante();
 			editeurDeText.setText("");
-
 		}
 
+		ViewTable table;
 		if (event.equals("Toutes les commandes")) {
 			table = new ViewTable(contr.callGetAllCammandes());
 			table.setVisible(true);
@@ -513,14 +479,12 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 				table.setVisible(true);
 			}
 		}
-		
-		if(event.equals("graphiques des commandes")) {
-			 statCom = new ViewOrderStatistics(this, true);
+		if (event.equals("graphiques des commandes")) {
+			ViewOrderStatistics statCom = new ViewOrderStatistics(this, true);
 		}
-		if(event.equals("graphiques des gains")){
-			 statGain = new ViewGainStatistics(this,true);
+		if (event.equals("graphiques des gains")) {
+			ViewGainStatistics statGain = new ViewGainStatistics(this, true);
 		}
-
 	}
 
 	/**
@@ -531,7 +495,6 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 		if (JOptionPane.showConfirmDialog(null, "Voulez-vous quitter le programme ?", "Gestionnaire de commandes",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(ABORT);
-
 	}
 
 	public JButton getButtonSource(String numTab) {
@@ -556,7 +519,7 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 	private void saveCommandeInDB() {
 		Commande cde = new Commande();
 		cde.setNumTab(this.getNumeroDeTable());
-		tableOQP = new ArrayList<>();
+		ArrayList<String> tableOQP = new ArrayList<>();
 		if (cde.getNumTab() == null || laCommande.getListeDesCommandes().isEmpty()) {
 			timer.setRepeats(false);
 			timer.start();
@@ -568,15 +531,13 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 			laCommande.setNumTab(numtbl);
 			laCommande.setMenus(laCommande.displayCommandForDB());
 			laCommande.setPrixTotalFromDB(laCommande.getPrixTotal());
-
 			if (!(tableOQP.contains(numtbl))) {
 				try {
 					// Ajoute la nouvelle table
 					contr.callAddCommandeDAO(laCommande.getListeDesCommandes());
 					timer.setRepeats(false);
 					timer.start();
-					optionPane.createDialog(null, "1: Commande ajoutée avec succes !").setVisible(true);
-
+					optionPane.createDialog(null, "Commande ajoutée avec succes !").setVisible(true);
 				} catch (SQLException ex) {
 					throw new RuntimeException(ex);
 				}
@@ -587,14 +548,12 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 					contr.callUpdateCommandeDAO(numtbl, laCommande.getListeDesCommandes());
 					timer.setRepeats(false);
 					timer.start();
-					optionPane.createDialog(null, "0: Commande updatée avec succes !").setVisible(true);
+					optionPane.createDialog(null, "Commande updatée avec succes !").setVisible(true);
 				} catch (SQLException ex) {
 					throw new RuntimeException(ex);
 				}
-
 			}
 			laCommande.setNumTab(null); // Nettoyage du stckage de numéro de table
-
 		}
 	}
 
@@ -616,21 +575,15 @@ public class ViewCreerCommandeForm extends JFrame implements ItemListener, Actio
 				timer.start();
 				optionPane.createDialog(null, "Ajoutez un menu à la commande!").setVisible(true);
 			} else {
-				// ToDo: voir dans Commande comment switcher listecommandes avec la methode
-				// selectCommande
-
 				laCommande.setNumTab(this.getNumeroDeTable());
 				String affichage = laCommande.displayCommand();
 				editeurDeText.setText(affichage);
-
 				setPlatItemSelected(null);
 				setAccompItemSelected(null);
 				setDessItemSelected(null);
-
 			}
 		}
 	}
-
 	private boolean checkCommandeCourante() {
 		if (laCommande.getListeDesCommandes().containsKey(this.getNumeroDeTable())) {
 			getButtonSource(this.getNumeroDeTable()).setBackground(new Color(34, 81, 222));

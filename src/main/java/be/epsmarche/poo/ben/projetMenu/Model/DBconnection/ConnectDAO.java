@@ -10,30 +10,26 @@ import javax.swing.JOptionPane;
  * @author ben
  * @since V4
  */
-//Todo: créer le fichier XML de connection à la dataBase
 public class ConnectDAO {
-	/**
-	 * URL data Base
-	 */
-	private final String URL = "localhost:33020/ben_MenuV4";
-	/**
-	 * Password Data Base
-	 */
-	private final String PASS = "menuPass";
-	/**
-	 * User data Base
-	 */
-	private final String USER = "pooMenu";
+	private  String DRIVER = null;
+	private  String URL = null;
+	private  String PASS = null;
+	private  String USER = null;
 
 	/**
 	 * Constructeur
 	 */
 	public ConnectDAO() {
+		LoadXMLfileConnector connect = new LoadXMLfileConnector();
+		DRIVER = connect.getDriver();
+		URL = connect.getUrl();
+		PASS = connect.getPass();
+		USER = connect.getUser();
 	}
-
+	
+	
 	/**
 	 * fournisseur d'instance unique
-	 *
 	 * @return une instance de la classe connectDAO
 	 */
 	public static ConnectDAO getInstance() {
@@ -54,16 +50,11 @@ public class ConnectDAO {
 
 	public Connection connection() throws SQLException {
 		Connection con = null;
-
 		try {
-			// Chargement du driver de mysql
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName(DRIVER);
 			// Connexion à la BD
-			// on peut remplacer la partie entre parenthèse par une méthode qui retourne la
-			// partie paramètre
 			con = (Connection) DriverManager.getConnection("jdbc:mysql://" + this.URL, this.USER, this.PASS);
 			return con;
-
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(null, "Erreur sur le driver mySql: " + ex);
 			return null;
@@ -71,15 +62,5 @@ public class ConnectDAO {
 			JOptionPane.showMessageDialog(null, "Echec de connexion à la bade donnés" + ex);
 			return null;
 		}
-
-	}
-
-	private PreparedStatement preparedStatement(String sqlQuery) throws SQLException {
-		java.sql.Connection con = null;
-		java.sql.PreparedStatement pStmt = null;
-		con = (Connection) getInstance().connection();
-		con.setAutoCommit(false);
-		pStmt = con.prepareStatement(sqlQuery);
-		return pStmt;
 	}
 }

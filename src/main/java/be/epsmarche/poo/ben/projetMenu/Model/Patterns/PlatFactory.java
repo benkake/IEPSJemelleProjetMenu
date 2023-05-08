@@ -10,9 +10,7 @@ import be.epsmarche.poo.ben.projetMenu.Model.Plat.Volaille;
  *
  * @author ben
  */
-//TODO penser à revoir les commentaires du projet 
-// et à générer la doc du projet
-// voir lien: https://koor.fr/Java/Tutorial/java_javadoc_introduction.wp
+
 public class PlatFactory {
 
 	/**

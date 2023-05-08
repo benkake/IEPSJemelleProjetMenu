@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,10 +24,17 @@ public class ViewModifFormulaire extends JDialog implements ActionListener {
 	private final MenuController contr;
 	private JTextField fieldId;
 	private JCheckBox checkPayee;
+	private JTable tableDesCommandes;
+	private Commande commandeChoisie;
 
-	public ViewModifFormulaire() {
+
+	// constructeur qui prend en paramètre la table et la commande à modifer
+	public ViewModifFormulaire(JTable tableCommandes,Commande commandeChoisie) {
 		this.contr = MenuController.getControInstance();
+		this.tableDesCommandes = tableCommandes;
+		this.commandeChoisie = commandeChoisie;
 		this.initComponent();
+
 	}
 
 	public void initComponent() {
@@ -38,7 +46,7 @@ public class ViewModifFormulaire extends JDialog implements ActionListener {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		Container contenu = getContentPane();
 		contenu.setLayout(new GridLayout(3, 1, 20, 10));
-		
+
 		// 1-formulaire: l'ID
 		JPanel panelId = new JPanel();
 		panelId.setLayout(new FlowLayout(FlowLayout.LEFT)); // positionnement du form à gauche
@@ -71,15 +79,13 @@ public class ViewModifFormulaire extends JDialog implements ActionListener {
 		panelModSuppr.add(boutonSuppr);
 		contenu.add(panelModSuppr);
 	}
-
 	public void fillFields(Commande uneCommande) {
 		this.fieldId.setText(Integer.toString(uneCommande.getIdCommande()));
-		if (uneCommande.isPaid()) {
-			this.checkPayee.setSelected(true);
-		} else {
-			this.checkPayee.setSelected(false);
+		if (uneCommande.isPaid()) { // si une commande est payée
+			this.checkPayee.setSelected(true); // passe la valeur true au checkBox
+		} else { // sinon
+			this.checkPayee.setSelected(false); // passe la valeur false
 		}
-
 	}
 
 	@Override
@@ -87,7 +93,6 @@ public class ViewModifFormulaire extends JDialog implements ActionListener {
 		// stockage de la source de l'événement
 		String event = e.getActionCommand();
 		Commande commande = new Commande();
-
 		int idCommande = Integer.parseInt(fieldId.getText());
 		commande.setIdCommande(idCommande);
 
@@ -99,23 +104,26 @@ public class ViewModifFormulaire extends JDialog implements ActionListener {
 		// Action de modification dans la BD
 		if (event.equals("Modifier")) {
 			int idSelected = commande.getIdCommande();
-			Boolean isItPaid = commande.getPayee();
-			contr.callModifCommande(idSelected, isItPaid);
+			boolean isItPaid = commande.getPayee();
+			// création d'un booleen vérificateur d'erreur hasNotError
+			boolean hasError = contr.callModifCommande(idSelected,isItPaid);
+			if(!hasError){ // si la modification de la commande n'a pas d'erreur
+			tableDesCommandes.firePropertyChange("Listener commande modif",commandeChoisie.getPayee(), commande.getPayee());
+			}
 		}
+
 		// Action de suppression dans le Map et la BD
 		if (event.equals("Supprimer")) {
 			String tablCde = commande.getNumTab();
-
 			try {
 				contr.deleteCommandeInMap((HashMap<String, ArrayList<Iplat>>) commande.getListeDesCommandes(), tablCde);
 			} catch (IOException | SQLException ex) {
 				throw new RuntimeException(ex);
 			}
 			contr.callDeleteCommandeByTabl(tablCde);
+			tableDesCommandes.firePropertyChange("Listener commande delete", false, true);
 		}
 		this.setVisible(false);
 		dispose();
-
 	}
-
 }

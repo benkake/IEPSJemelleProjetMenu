@@ -3,7 +3,6 @@ package be.epsmarche.poo.ben.projetMenu.Controller;
 import java.awt.EventQueue;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +17,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import be.epsmarche.poo.ben.projetMenu.Model.Carte.Loader;
-import be.epsmarche.poo.ben.projetMenu.Model.Commandes.Commande;
 import be.epsmarche.poo.ben.projetMenu.Model.DBconnection.CommandesDAO;
-import be.epsmarche.poo.ben.projetMenu.Model.DBconnection.ConnectDAO;
 import be.epsmarche.poo.ben.projetMenu.Model.Plat.Iplat;
 import be.epsmarche.poo.ben.projetMenu.View.ViewAccueil;
-import be.epsmarche.poo.ben.projetMenu.View.ViewModifFormulaire;
 
 /**
  * Controleur: Classe permettant servant d'intermédiaire entre le modèle et la
@@ -33,23 +29,19 @@ import be.epsmarche.poo.ben.projetMenu.View.ViewModifFormulaire;
  */
 public class MenuController {
 
-	// Attributs du controleur
-	private static ViewAccueil accueil;
-	private ViewModifFormulaire modifForm;
-	Commande laCommande = new Commande();
 	private static CommandesDAO comDAO = new CommandesDAO();
-	private static ConnectDAO DAOcon;
-	/**
-	 * Attribut de chargement
-	 */
-	private static Loader load = null;
-	
+
 	// Rafraichisseur de vues: un écouteur spécial
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private final String message = "";
+	@SuppressWarnings("unused")
+	private final JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE,
+			JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
+	private final javax.swing.Timer timer = new javax.swing.Timer(1000,
+			e -> optionPane.setValue(JOptionPane.CLOSED_OPTION));
 
 	public MenuController() {
 		EventQueue.invokeLater(new Runnable() {
-
 			@Override
 			public void run() {
 				try {
@@ -60,32 +52,30 @@ public class MenuController {
 			}
 		});
 	}
-
 	public void start() {
-		accueil = new ViewAccueil();
+		// Attributs du controleur
+		ViewAccueil accueil = new ViewAccueil();
 		accueil.setVisible(true);
 	}
 
 	/**
 	 * Methode getInstance()
-	 *
 	 * @return une instance unique du controleur
 	 */
 	public static MenuController getControInstance() {
 		return ControllerHolder.INSTANCE;
 	}
-
 	public static Loader loadDataBase() throws ParserConfigurationException, SAXException, IOException {
-		load = new Loader("menu.xml");
+		/**
+		 * Attribut de chargement
+		 */
+		Loader load = new Loader("menu.xml");
 		return load;
 	}
-
-
 
 	/**
 	 * Classe interne ControllerHolder permet de créer un singleton du controleur
 	 * MenuConroller. Ce singleton es appelé INSTANCE
-	 *
 	 * @author ben
 	 */
 	private static class ControllerHolder {
@@ -101,11 +91,6 @@ public class MenuController {
 	public static String showMenu(Iplat plat) {
 		return (plat.toString());
 	}
-
-	public static Double subTotal(Iplat menu) {
-		return menu.getPrix();
-	}
-
 	/**
 	 * methode permettant l'instanciation de la classe Loader
 	 *
@@ -114,7 +99,6 @@ public class MenuController {
 	 */
 	public static Loader getLoadObject(Loader l) {
 		try {
-
 			l = loadDataBase();
 		} catch (ParserConfigurationException | SAXException | IOException e1) {
 
@@ -131,14 +115,16 @@ public class MenuController {
 				// Supprime la commande correspondante du hashMap
 				listDesCommandes.remove(table);
 				saveCollection(listDesCommandes);
-				System.out.println("La commande de la table " + table + " a été supprimée"); // ToDo effacer
+				timer.setRepeats(false);
+				timer.start();
+				optionPane.createDialog(null, "La commande de la "+table+" a été supprimée").setVisible(true);
 			} else {
-				System.out.println("La commande selectionnée n'existe pas dans la table " + table); // ToDo effacer
+				timer.setRepeats(false);
+				timer.start();
+				optionPane.createDialog(null, "Vous n'avez selectionné aucune commande").setVisible(true);
 			}
 		}
 	}
-
-
 	public void saveCollection(HashMap<String, ArrayList<Iplat>> commandes) throws SQLException {
 		try {
 			callAddCommandeDAO(commandes);
@@ -146,21 +132,15 @@ public class MenuController {
 			throw new RuntimeException(e);
 		}
 	}
-
 	public boolean callUpdateCommandeDAO(String numt, Map<String, ArrayList<Iplat>> listeDesCommandes)
 			throws SQLException {
-		comDAO = new CommandesDAO();
 		this.pcs.firePropertyChange("Listener commande", null, listeDesCommandes);
 		return comDAO.updateCommandeDAO(numt, listeDesCommandes);
 	}
-
 	public boolean callAddCommandeDAO(Map<String, ArrayList<Iplat>> listeCommandes) throws SQLException {
-		comDAO = new CommandesDAO();
 		return comDAO.addCommandeDAO(listeCommandes);
 	}
-
 	public ArrayList callGetAllCammandes() {
-		// récupérer l'arrayList
 		return (ArrayList) comDAO.getAllCommandes();
 	}
 
@@ -172,30 +152,22 @@ public class MenuController {
 		return (ArrayList) comDAO.getTableOccupee();
 	}
 
-	public void callViewModifFormulaire(Commande uneCommande) {
-		this.modifForm = new ViewModifFormulaire();
-		this.modifForm.fillFields(uneCommande);
-		this.modifForm.setVisible(true);
-	}
-
 	public void callDeleteCommandeByTabl(String numeroDeTable) {
 		comDAO.deleteCommandeByTable(numeroDeTable);
-		
 	}
 
-	public void callModifCommande(int selectedId, Boolean isPaid) {
+	public boolean callModifCommande(int selectedId, Boolean isPaid) {
 		try {
 			comDAO.modifCommandeDAO(selectedId, isPaid);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
-	
 	public Map getCommandeMapping() {
 		return comDAO.commandeMapping();
 	}
 	public Map getGainMapping() {
 		return comDAO.gainMapping();
 	}
-
 }

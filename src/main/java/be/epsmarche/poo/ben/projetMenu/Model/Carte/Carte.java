@@ -150,7 +150,7 @@ public class Carte {
 		try {
 			loaded.creationPlats();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		ArrayList<Choix> listeDesElements = getSingleInstance().getListeDesPlats();
@@ -161,7 +161,7 @@ public class Carte {
 		try {
 			loaded.creationAccompagnements();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		ArrayList<Choix> listeDesAccomp = getSingleInstance().getListeDesAccompagnements();
@@ -172,7 +172,7 @@ public class Carte {
 		try {
 			loaded.creationDessert();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		ArrayList<Choix> listeDesDess = getSingleInstance().getListeDesDesserts();

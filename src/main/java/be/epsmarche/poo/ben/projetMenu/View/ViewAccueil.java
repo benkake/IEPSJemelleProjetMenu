@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 public class ViewAccueil extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = -3579165151123262311L;
-	private static ViewCreerCommandeForm ouvrirCreerCde;
 	/**
 	 * Attributs de l'interface graphique
 	 */
@@ -120,7 +119,7 @@ public class ViewAccueil extends JFrame implements ActionListener {
 			}
 		}
 		if (source == composerCde) {
-			ouvrirCreerCde = new ViewCreerCommandeForm();
+			ViewCreerCommandeForm ouvrirCreerCde = new ViewCreerCommandeForm();
 			ouvrirCreerCde.setVisible(true);
 			this.dispose(); // fermer la fenêtre courante
 		}

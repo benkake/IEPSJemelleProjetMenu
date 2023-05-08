@@ -100,7 +100,6 @@ public class Choix implements Iplat {
 
 	@Override
 	public String getPeparation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

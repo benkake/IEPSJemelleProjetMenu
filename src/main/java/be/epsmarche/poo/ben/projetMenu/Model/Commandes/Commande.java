@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 /**
  * Classe définissant les commandes
  *
@@ -30,7 +29,6 @@ public class Commande {
 	private final ArrayList<Iplat> listeMenu5 = new ArrayList<>(); // commande table 5
 	private final ArrayList<Iplat> listeMenu6 = new ArrayList<>(); // commande table 6
 	private final Map<String, ArrayList<Iplat>> listeDesCommandes = new HashMap<>();
-	public ArrayList dataForTable = new ArrayList<>();
 	private Integer idCommande;
 	private String numTab;
 	private String menus;
@@ -41,14 +39,12 @@ public class Commande {
 	 * listeMenu: la liste de menus correspondant à une commande quelconque
 	 */
 	private ArrayList<Iplat> listeMenu = new ArrayList<>();
-
 	/**
 	 * Constructeur par défaut
 	 */
 	public Commande() {
 		super();
 	}
-
 	/**
 	 * Constructeur à 1 param
 	 *
@@ -58,9 +54,6 @@ public class Commande {
 		super();
 		this.numTab = numTab;
 		this.listeMenu = new ArrayList<>();
-//		this.facturee = facturee;
-//		this.date = date;
-		// Insertion des 6 tables du restaurant
 		ArrayList<String> lesTables = new ArrayList<>();
 		lesTables.add(" 1");
 		lesTables.add(" 2");
@@ -68,27 +61,6 @@ public class Commande {
 		lesTables.add(" 4");
 		lesTables.add(" 5");
 		lesTables.add(" 6");
-	}
-
-	/**
-	 * Constructeur destiné à la table
-	 *
-	 * @param idCommande
-	 * @param numTab
-	 * @param menus
-	 * @param prixTotalFromDB
-	 * @param dateCommande
-	 * @param payee
-	 */
-	public Commande(Integer idCommande, String numTab, String menus, Double prixTotalFromDB, Date dateCommande,
-			Boolean payee) {
-		super();
-		this.idCommande = idCommande;
-		this.numTab = numTab;
-		this.menus = menus;
-		this.prixTotalFromDB = prixTotalFromDB;
-		this.dateCommande = dateCommande;
-		this.payee = payee;
 	}
 
 	public String getNumTab() {
@@ -153,10 +125,6 @@ public class Commande {
 		if (getNumTab().equals(" 6"))
 			listeMenu = listeMenu6;
 		return listeMenu;
-	}
-
-	public void setListeMenu(ArrayList<Iplat> listeMenu) {
-		this.listeMenu = listeMenu;
 	}
 
 	public Map<String, ArrayList<Iplat>> getListeDesCommandes() {
@@ -234,7 +202,6 @@ public class Commande {
 	 * @since V3
 	 */
 	public Iplat getMenuConcocted(Choix plat, Choix accomp, Choix dess) {
-
 		AccompagnementFactory accompChoisi = new AccompagnementFactory();
 		DessertFactory dessChoisi = new DessertFactory();
 		PlatFactory platChoisi = new PlatFactory();
@@ -242,10 +209,9 @@ public class Commande {
 		Iplat menuConcocted = platChoisi.getPlat(plat.getType(), plat.getDescription(), plat.getPrix());
 		menuConcocted = accompChoisi.getAccomp(menuConcocted, accomp);
 		menuConcocted = dessChoisi.getDess(menuConcocted, dess);
-
 		return menuConcocted;
 	}
-
+	// méthode qui retourne l'état du paymement
 	public boolean isPaid() {
 		return Boolean.TRUE.equals(payee); // cette forme evite le cas ou le boolean payee est null
 	}
